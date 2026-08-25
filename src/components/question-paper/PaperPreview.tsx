@@ -102,8 +102,9 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
             type="button"
             onClick={handlePrint}
             className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition"
+            title="সরাসরি প্রিন্ট অথবা পিডিএফ (Save as PDF) হিসেবে ডাউনলোড করুন"
           >
-            <Printer className="w-3.5 h-3.5" /> প্রিন্ট
+            <Printer className="w-3.5 h-3.5" /> প্রিন্ট / PDF
           </button>
           <button
             type="button"
@@ -116,7 +117,10 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
       </div>
 
       {/* Real Paper Preview Container (A4 Look) */}
-      <div className="bg-white text-slate-900 shadow-2xl rounded-2xl p-4 sm:p-10 md:p-14 border border-slate-200 max-w-4xl mx-auto min-h-[700px] sm:min-h-[900px] font-sans antialiased select-text overflow-x-auto">
+      <div 
+        id="printable-question-paper" 
+        className="bg-white text-slate-900 shadow-2xl rounded-2xl p-4 sm:p-10 md:p-14 border border-slate-200 max-w-4xl mx-auto min-h-[700px] sm:min-h-[900px] font-sans antialiased select-text overflow-x-auto"
+      >
         {/* Header Block */}
         <div className="text-center space-y-1 pb-3 border-b-2 border-slate-900">
           {data.header.schoolName && (

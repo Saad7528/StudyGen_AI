@@ -70,6 +70,13 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handlePrintPdf = () => {
+    onClose();
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-fade-in">
       <div className="w-full max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6">
@@ -89,10 +96,10 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
           </div>
           <div>
             <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
-              গুগল ডক ও ওয়ার্ডে এডিটেবল (.docx) এক্সপোর্ট
+              প্রশ্নপত্র ডাউনলোড ও এক্সপোর্ট
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              ১০০% আসল ওপেন-এক্সএমএল ফরম্যাটে প্রশ্নপত্র ডাউনলোড করুন
+              গুগল ডক (.docx), সরাসরি PDF বা টেক্সট ফরম্যাটে সংরক্ষণ করুন
             </p>
           </div>
         </div>
@@ -114,22 +121,30 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
         </div>
 
         {/* Main Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button
             onClick={handleDownloadDocx}
             disabled={isExporting}
-            className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2 transition"
+            className="w-full py-3 px-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white font-bold text-xs shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-1.5 transition"
           >
             {isExporting ? <Sparkles className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            {isExporting ? 'তৈরি হচ্ছে...' : 'ডাউনলোড .docx ফাইল'}
+            {isExporting ? 'তৈরি হচ্ছে...' : 'ডাউনলোড .docx'}
+          </button>
+
+          <button
+            onClick={handlePrintPdf}
+            className="w-full py-3 px-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-bold text-xs shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-1.5 transition"
+          >
+            <Download className="w-4 h-4" />
+            PDF / প্রিন্ট
           </button>
 
           <button
             onClick={handleCopyFormattedText}
-            className="w-full py-3.5 px-4 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 transition"
+            className="w-full py-3 px-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 transition"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-            {copied ? 'ক্লিপবোর্ডে কপি হয়েছে!' : 'সরাসরি টেক্সট কপি করুন'}
+            {copied ? 'কপি হয়েছে!' : 'টেক্সট কপি'}
           </button>
         </div>
 

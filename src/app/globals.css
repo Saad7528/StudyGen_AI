@@ -57,3 +57,60 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
+
+/* =========================================================
+   Print & PDF Export Styles (Clean A4 Paper Export Only)
+   ========================================================= */
+@media print {
+  /* Hide all UI elements, navigation, toolbar, footer, background decorations */
+  nav,
+  footer,
+  header,
+  button,
+  .no-print,
+  [role="dialog"],
+  .fixed,
+  .sticky {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 12pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Target the question paper preview sheet exclusively */
+  #printable-question-paper {
+    display: block !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+
+  .break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm 15mm 15mm;
+  }
+}
