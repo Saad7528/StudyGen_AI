@@ -46,6 +46,10 @@ export interface ExamHeaderInfo {
   timeAllowed: string; // e.g., '২ ঘণ্টা ৩০ মিনিট'
   fullMarks: string; // e.g., '৭৫'
   generalInstructions?: string; // 'বিশেষ দ্রষ্টব্য: ডানপাশের সংখ্যা প্রশ্নের পূর্ণমান জ্ঞাপক।'
+  logoUrl?: string; // Base64 or URL of school logo
+  watermarkText?: string; // e.g., 'ঢাকা কলেজিয়েট স্কুল'
+  showSignatures?: boolean; // Invigilator & Principal signature box
+  themeStyle?: 'standard' | 'boxed' | 'classic' | 'cadet';
 }
 
 export interface QuestionPaperData {
@@ -55,3 +59,4 @@ export interface QuestionPaperData {
   fontFamily: 'Noto Sans Bengali' | 'Kalpurush' | 'Arial' | 'Times New Roman';
   fontSize: number; // e.g. 11 or 12
 }
+
