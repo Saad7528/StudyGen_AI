@@ -4,11 +4,13 @@ import React from 'react';
 import { QuestionSection, QuestionItem, QuestionType } from '../../types/question-paper';
 import { Plus, Trash2, Copy, MoveUp, MoveDown, Layers, HelpCircle, CheckSquare, AlignLeft } from 'lucide-react';
 import { KaTeXViewer } from '../KaTeXViewer';
+import { VoiceInputButton } from '../common/VoiceInputButton';
 
 interface QuestionEditorProps {
   sections: QuestionSection[];
   onChange: (sections: QuestionSection[]) => void;
 }
+
 
 export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChange }) => {
   const handleAddSection = () => {
@@ -227,14 +229,22 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
                 {q.type === 'cq' && (
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                        উদ্দীপক (Stem / Scenario)
-                      </label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                          উদ্দীপক (Stem / Scenario)
+                        </label>
+                        <VoiceInputButton
+                          onTranscript={(text) => {
+                            const newStem = q.stem ? `${q.stem} ${text}` : text;
+                            handleUpdateQuestion(secIdx, qIdx, { stem: newStem });
+                          }}
+                        />
+                      </div>
                       <textarea
                         rows={2}
                         value={q.stem || ''}
                         onChange={(e) => handleUpdateQuestion(secIdx, qIdx, { stem: e.target.value })}
-                        placeholder="উদ্দীপক লিখুন..."
+                        placeholder="উদ্দীপক লিখুন বা ভয়েস বাটনে চাপ দিয়ে কথা বলুন..."
                         className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
                       />
                       {q.stem?.includes('$') && (
@@ -258,7 +268,15 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
                               newSubs[sIdx].text = e.target.value;
                               handleUpdateQuestion(secIdx, qIdx, { subQuestions: newSubs });
                             }}
+                            placeholder={`উপ-প্রশ্ন (${sub.label})`}
                             className="flex-1 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white"
+                          />
+                          <VoiceInputButton
+                            onTranscript={(text) => {
+                              const newSubs = [...(q.subQuestions || [])];
+                              newSubs[sIdx].text = newSubs[sIdx].text ? `${newSubs[sIdx].text} ${text}` : text;
+                              handleUpdateQuestion(secIdx, qIdx, { subQuestions: newSubs });
+                            }}
                           />
                           <div className="flex items-center gap-1 w-16">
                             <span className="text-[10px] text-slate-400">মান:</span>
@@ -282,12 +300,23 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
                 {/* Multiple Choice Question (MCQ) UI */}
                 {q.type === 'mcq' && (
                   <div className="space-y-3">
-                    <div>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                          প্রশ্ন বাক্য
+                        </label>
+                        <VoiceInputButton
+                          onTranscript={(text) => {
+                            const newText = q.text ? `${q.text} ${text}` : text;
+                            handleUpdateQuestion(secIdx, qIdx, { text: newText });
+                          }}
+                        />
+                      </div>
                       <input
                         type="text"
                         value={q.text}
                         onChange={(e) => handleUpdateQuestion(secIdx, qIdx, { text: e.target.value })}
-                        placeholder="প্রশ্ন বাক্য লিখুন..."
+                        placeholder="বহুনির্বাচনী প্রশ্ন বাক্য লিখুন বা ভয়েস ব্যবহার করুন..."
                         className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 font-medium"
                       />
                       {q.text?.includes('$') && (
@@ -320,13 +349,19 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
 
                 {/* Short / Broad Question UI */}
                 {q.type !== 'cq' && q.type !== 'mcq' && (
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <input
                       type="text"
                       value={q.text}
                       onChange={(e) => handleUpdateQuestion(secIdx, qIdx, { text: e.target.value })}
-                      placeholder="প্রশ্ন বাক্য লিখুন..."
+                      placeholder="প্রশ্ন বাক্য লিখুন বা ভয়েস ব্যবহার করুন..."
                       className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <VoiceInputButton
+                      onTranscript={(text) => {
+                        const newText = q.text ? `${q.text} ${text}` : text;
+                        handleUpdateQuestion(secIdx, qIdx, { text: newText });
+                      }}
                     />
                     <div className="flex items-center gap-1.5">
                       <span className="text-xs text-slate-400 font-medium">মান:</span>
