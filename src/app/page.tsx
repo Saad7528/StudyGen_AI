@@ -15,9 +15,13 @@ import { FormulaLibrary } from '../components/utilities/FormulaLibrary';
 import { QuickOcr } from '../components/utilities/QuickOcr';
 import { TextDiffChecker } from '../components/utilities/TextDiffChecker';
 import { GrammarChecker } from '../components/utilities/GrammarChecker';
+import { OmrGenerator } from '../components/utilities/OmrGenerator';
+import { StudySummaryGenerator } from '../components/utilities/StudySummaryGenerator';
+import { QuizFlashcardPractice } from '../components/utilities/QuizFlashcardPractice';
 import { AboutCreator } from '../components/AboutCreator';
 import { QuestionPaperData } from '../types/question-paper';
 import { SAMPLE_EXAM_PAPERS } from '../lib/sample-data';
+
 import { 
   Sparkles, 
   FileText, 
@@ -196,6 +200,38 @@ export default function HomePage() {
         )}
 
         {/* ==========================================
+            TAB: OMR SHEET GENERATOR
+           ========================================== */}
+        {activeTab === 'omr-generator' && (
+          <div className="space-y-6 animate-fade-in">
+            <OmrGenerator />
+          </div>
+        )}
+
+        {/* ==========================================
+            TAB: AI STUDY SHEET & SUMMARY
+           ========================================== */}
+        {activeTab === 'study-summary' && (
+          <div className="space-y-6 animate-fade-in">
+            <StudySummaryGenerator
+              onSendToQuiz={() => {
+                setActiveTab('quiz-practice');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          </div>
+        )}
+
+        {/* ==========================================
+            TAB: INTERACTIVE QUIZ & FLASHCARDS
+           ========================================== */}
+        {activeTab === 'quiz-practice' && (
+          <div className="space-y-6 animate-fade-in">
+            <QuizFlashcardPractice paperData={paperData} />
+          </div>
+        )}
+
+        {/* ==========================================
             TAB: AI GRAMMAR & SPELL CHECKER
            ========================================== */}
         {activeTab === 'grammar-checker' && (
@@ -260,6 +296,7 @@ export default function HomePage() {
             <AboutCreator />
           </div>
         )}
+
 
       </main>
 
