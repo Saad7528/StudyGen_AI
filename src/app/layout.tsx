@@ -16,8 +16,19 @@ const notoSansBengali = Noto_Sans_Bengali({
 });
 
 export const metadata: Metadata = {
-  title: 'StudyGen AI (স্টাডিজেন এআই) — AI Question Paper & Educational Problem Solver',
-  description: 'হাতে লেখা ছবি থেকে গুগল ডক এডিটেবল প্রশ্নপত্র তৈরির আধুনিক এআই সিস্টেম, স্টেপ-বাই-স্টেপ সমীকরণ সমাধানকারী ও এডুকেশনাল টুলকিট।',
+  title: 'StudyGen AI (স্টাডিজেন এআই) — AI Question Paper, OMR Generator & Smart Study Suite',
+  description: 'হাতে লেখা ছবি থেকে গুগল ডক এডিটেবল প্রশ্নপত্র, ওএমআর শিট জেনারেটর, এআই স্টাডি সামারি, স্টেপ-বাই-স্টেপ সমীকরণ সমাধানকারী ও এডুকেশনাল টুলকিট।',
+  keywords: [
+    'StudyGen AI',
+    'Question Paper Generator',
+    'OMR Sheet Generator',
+    'AI Study Sheet',
+    'Bengali OCR',
+    'Equation Solver',
+    'Bangladesh Education',
+    'HSC SSC Question Maker'
+  ],
+  authors: [{ name: 'S. M. Amirul Islam Saad' }],
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -25,7 +36,15 @@ export const metadata: Metadata = {
     ],
     apple: '/logo-icon.png',
   },
+  openGraph: {
+    title: 'StudyGen AI — Smart Educational Suite',
+    description: 'AI Photo to Google Docs Question Paper, OMR Generator, Flashcards & Solver.',
+    type: 'website',
+    locale: 'bn_BD',
+    siteName: 'StudyGen AI'
+  }
 };
+
 
 export default function RootLayout({
   children,
