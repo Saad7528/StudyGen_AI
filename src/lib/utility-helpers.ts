@@ -91,8 +91,45 @@ export const FORMULA_COLLECTION: FormulaItem[] = [
     variables: [
       { symbol: 'A, B', meaning: 'বুলিয়ান চলক (0 বা 1)' }
     ]
+  },
+  {
+    id: 'f-8',
+    subject: 'Physics',
+    topic: 'স্থির তড়িৎ ও কুলম্বের সূত্র',
+    title: 'কুলম্বের সূত্র (Coulomb\'s Law)',
+    formulaLatex: 'F = \\frac{1}{4\\pi\\varepsilon_0} \\frac{q_1 q_2}{r^2}',
+    description: 'দুটি বিন্দু আধনের মধ্যকার আকর্ষণ বা বিকর্ষণ বল।',
+    variables: [
+      { symbol: 'q_1, q_2', meaning: 'আধানের পরিমাণ (Coulomb)' },
+      { symbol: 'r', meaning: 'দূরত্ব (m)' },
+      { symbol: '\\varepsilon_0', meaning: 'শূন্যস্থানের ভেদনযোগ্যতা' }
+    ]
+  },
+  {
+    id: 'f-9',
+    subject: 'Physics',
+    topic: 'আধুনিক পদার্থবিজ্ঞান',
+    title: 'আইনস্টাইনের ভর-শক্তি সমীকরণ',
+    formulaLatex: 'E = mc^2, \\quad m = \\frac{m_0}{\\sqrt{1 - \\frac{v^2}{c^2}}}',
+    description: 'ভর ও শক্তির রূপান্তর এবং বিশেষ আপেক্ষিকতা।',
+    variables: [
+      { symbol: 'm_0', meaning: 'নিশ্চল ভর' },
+      { symbol: 'c', meaning: 'আলোর বেগ (3 x 10^8 m/s)' }
+    ]
+  },
+  {
+    id: 'f-10',
+    subject: 'Higher Math',
+    topic: 'যোগজীকরণ (Integration)',
+    title: 'অনির্দিষ্ট যোগজের মৌলিক সূত্রাবলী',
+    formulaLatex: '\\int x^n dx = \\frac{x^{n+1}}{n+1} + c, \\quad \\int \\frac{1}{x} dx = \\ln|x| + c, \\quad \\int e^x dx = e^x + c',
+    description: 'ক্যালকুলাসের সমাকলন বা ক্ষেত্রফল নির্ণয়ের মূল সূত্র।',
+    variables: [
+      { symbol: 'c', meaning: 'যোগজীকরণ ধ্রুবক (Constant of Integration)' }
+    ]
   }
 ];
+
 
 export function calculateSscHscGpa(subjects: GpaSubject[]): GpaResult {
   if (!subjects.length) {
