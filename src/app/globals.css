@@ -102,6 +102,7 @@ body {
     min-height: auto !important;
     color: #000000 !important;
     background: #ffffff !important;
+    text-rendering: optimizeLegibility;
   }
 
   .break-inside-avoid {
@@ -111,6 +112,7 @@ body {
 
   @page {
     size: A4 portrait;
-    margin: 12mm 15mm 15mm 15mm;
+    margin: 10mm 12mm 12mm 12mm;
   }
 }
+
