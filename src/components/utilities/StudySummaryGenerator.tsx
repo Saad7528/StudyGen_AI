@@ -147,8 +147,45 @@ const SAMPLE_TOPICS: Record<string, StudySummaryResult> = {
       }
     ],
     generatedAt: 'August 2026'
+  },
+  'chem-acids': {
+    title: 'এসিড-ক্ষার সম্যাবস্থা ও pH গণনা (Acids, Bases & pH)',
+    topic: 'রসায়ন - অধ্যায় ৪ (রাসায়নিক পরিবর্তন)',
+    subject: 'রসায়ন (Chemistry)',
+    quickSummary: [
+      'ব্রনস্টেড-লাউরি মতবাদ অনুযায়ী প্রোটন ($H^+$) দাতাকে এসিড এবং প্রোটন গ্রহীতাকে ক্ষারক বলে।',
+      'লুইস মতবাদ অনুযায়ী মুক্তজোড় ইলেকট্রন গ্রহীতা এসিড এবং ইলেকট্রন দাতা ক্ষারক।',
+      '$pH = -\\log_{10}[H^+]$ এবং $25^\\circ C$ তাপমাত্রায় $pH + pOH = 14$।',
+      'বাফার দ্রবণ হলো যে দ্রবণে সামান্য এসিড বা ক্ষার যোগ করলেও $pH$-এর মান অপরিবর্তিত থাকে।'
+    ],
+    keyDefinitions: [
+      {
+        term: 'অনুবন্ধী এসিড-ক্ষারক (Conjugate Acid-Base Pair)',
+        explanation: 'একটি প্রোটনের ($H^+$) পার্থক্যে তৈরি দুটি যৌগের যুগলকে অনুবন্ধী যুগল বলে। যেমন: $HCl$ এর অনুবন্ধী ক্ষারক $Cl^-$।'
+      },
+      {
+        term: 'বাফার ক্ষমতা (Buffer Capacity)',
+        explanation: 'কোনো বাফার দ্রবণের $pH$ পরিবর্তন প্রতিরোধ করার সক্ষমতাকে বাফার ক্ষমতা বলে।'
+      }
+    ],
+    formulasAndRules: [
+      { label: 'pH সূত্র', formula: 'pH = -\\log_{10}[H^+]', note: '[H+] হলো মোলারিটি ঘনমাত্রা' },
+      { label: 'হ্যান্ডারসন-হ্যাসেলবাক সমীকরণ (অম্লীয় বাফার)', formula: 'pH = pK_a + \\log\\frac{[\\text{Salt}]}{[\\text{Acid}]}', note: 'বাফার দ্রবণের pH নির্ণয়' }
+    ],
+    highYieldExamTips: [
+      'সবল এসিডের অনুবন্ধী ক্ষারক সবসময় দুর্বল হয় এবং দুর্বল এসিডের অনুবন্ধী ক্ষারক শক্তিশালী হয়।',
+      'মানব রক্তের $pH$ হলো $7.4$ (পরিসীমা $7.35 - 7.45$), রক্ত একটি কার্বনিক এসিড-বাইকার্বোনেট বাফার।'
+    ],
+    sampleQuestions: [
+      {
+        question: '$0.01\\, M\\, HCl$ দ্রবণের $pH$ কত?',
+        answer: '$pH = -\\log(0.01) = -\\log(10^{-2}) = 2$'
+      }
+    ],
+    generatedAt: 'August 2026'
   }
 };
+
 
 interface StudySummaryGeneratorProps {
   onSendToQuiz?: (data: StudySummaryResult) => void;
@@ -301,6 +338,7 @@ export const StudySummaryGenerator: React.FC<StudySummaryGeneratorProps> = ({ on
             {[
               { id: 'physics-motion', label: 'পদার্থবিজ্ঞান: গতি ও নিউটনের সূত্র' },
               { id: 'math-trig', label: 'উচ্চতর গণিত: ত্রিকোণমিতিক অনুপাত' },
+              { id: 'chem-acids', label: 'রসায়ন: এসিড-ক্ষার ও pH' },
               { id: 'ict-boolean', label: 'আইসিটি: বুলিয়ান অ্যালজেব্রা' }
             ].map((preset) => (
               <button
@@ -316,6 +354,7 @@ export const StudySummaryGenerator: React.FC<StudySummaryGeneratorProps> = ({ on
                 {preset.label}
               </button>
             ))}
+
           </div>
         </div>
 
