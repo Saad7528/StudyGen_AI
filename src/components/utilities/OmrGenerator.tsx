@@ -57,6 +57,15 @@ export const OmrGenerator: React.FC = () => {
     setSelectedSet(null);
   };
 
+  const handleFillDemo = () => {
+    const demo: Record<number, number> = {};
+    for (let i = 1; i <= config.totalQuestions; i++) {
+      demo[i] = Math.floor(Math.random() * config.optionsCount);
+    }
+    setMarkedAnswers(demo);
+    setSelectedSet(0);
+  };
+
   // Compute columns layout: e.g. 25 questions -> 1 column of 25 or 2 of 13/12
   const getColumns = () => {
     const total = config.totalQuestions;
@@ -110,13 +119,21 @@ export const OmrGenerator: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={handleFillDemo}
+            className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition"
+            title="নমুনা উত্তর বাবল ভরাট করুন"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" /> ডেমো ফিল
+          </button>
           <button
             type="button"
             onClick={resetMarks}
-            className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition"
+            className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition"
           >
-            <RotateCcw className="w-3.5 h-3.5" /> রিস্টার্ট বাবল
+            <RotateCcw className="w-3.5 h-3.5" /> রিসেট
           </button>
           <button
             type="button"
@@ -127,6 +144,7 @@ export const OmrGenerator: React.FC = () => {
           </button>
         </div>
       </div>
+
 
       {/* Configuration Controls */}
       <div className="p-5 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-md space-y-4">
