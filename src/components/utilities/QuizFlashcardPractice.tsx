@@ -115,8 +115,45 @@ const DEFAULT_DECKS: QuizDeck[] = [
         explanation: 'এটি Exclusive-OR (XOR) গেইটের সমীকরণ ($A\\overline{B} + \\overline{A}B$)।'
       }
     ]
+  },
+  {
+    id: 'math',
+    title: 'উচ্চতর গণিত: ত্রিকোণমিতি ও ক্যালকুলাস',
+    subject: 'উচ্চতর গণিত',
+    description: 'এইচএসসি ও এসএসসি উচ্চতর গণিতের গুরুত্বপূর্ণ অভেদ ও অন্তরীকরণ।',
+    cards: [
+      {
+        id: 'm1',
+        front: '$\\sin 2\\theta$ এর ত্রিকোণমিতিক সূত্রটি কী?',
+        back: '$\\sin 2\\theta = 2\\sin\\theta\\cos\\theta = \\frac{2\\tan\\theta}{1 + \\tan^2\\theta}$',
+        hint: 'সাইন ও কস উভয়ের গুণফল'
+      },
+      {
+        id: 'm2',
+        front: '$\\frac{d}{dx}(\\ln x)$ এবং $\\frac{d}{dx}(e^x)$ এর মান কত?',
+        back: '$\\frac{d}{dx}(\\ln x) = \\frac{1}{x}$ এবং $\\frac{d}{dx}(e^x) = e^x$',
+        hint: 'লগ ও এক্সপোনেনশিয়াল ডেরিভেটিভ'
+      }
+    ],
+    quizQuestions: [
+      {
+        id: 'mq1',
+        question: 'যদি $\\sin\\theta = \\frac{1}{2}$ হয়, তবে $\\theta$ এর মান কত ($0^\\circ \\le \\theta \\le 90^\\circ$)?',
+        options: ['$30^\\circ$', '$45^\\circ$', '$60^\\circ$', '$90^\\circ$'],
+        correctIndex: 0,
+        explanation: '$\\sin 30^\\circ = \\frac{1}{2}$ বা $\\frac{\\pi}{6}$ রেডিয়ান।'
+      },
+      {
+        id: 'mq2',
+        question: '$\\frac{d}{dx}(x^3 + 5x)$ এর অন্তরজ কত?',
+        options: ['$3x^2 + 5$', '$3x^2 + 5x$', '$x^2 + 5$', '$3x + 5$'],
+        correctIndex: 0,
+        explanation: 'পাওয়ার রুল অনুযায়ী: $\\frac{d}{dx}(x^3) = 3x^2$ এবং $\\frac{d}{dx}(5x) = 5$।'
+      }
+    ]
   }
 ];
+
 
 interface QuizFlashcardPracticeProps {
   paperData?: QuestionPaperData;
