@@ -24,19 +24,24 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-slate-600 dark:text-slate-400">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-semibold text-slate-600 dark:text-slate-400">
             <span className="flex items-center gap-1.5 text-emerald-500">
-              <CheckCircle2 className="w-4 h-4" /> ১০০% গুগল ডক (.docx) এডিটেবল
+              <CheckCircle2 className="w-4 h-4" /> .docx ও A4 PDF
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5 text-indigo-500">
-              <FileText className="w-4 h-4" /> ২-কলাম বোর্ড ফরম্যাট
+              <FileText className="w-4 h-4" /> ওএমআর বাবল শিট
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1.5 text-amber-500">
+              <Sparkles className="w-4 h-4" /> ফ্ল্যাশকার্ড ও কুইজ
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5 text-pink-500">
-              <Sparkles className="w-4 h-4" /> এআই ভিশন চালিত
+              <Sparkles className="w-4 h-4" /> এআই স্টাডি সামারি
             </span>
           </div>
+
         </div>
 
         <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-900 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
