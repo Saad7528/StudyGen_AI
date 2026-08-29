@@ -62,46 +62,60 @@ body {
    Print & PDF Export Styles (Clean A4 Paper Export Only)
    ========================================================= */
 @media print {
-  /* Hide all UI elements, navigation, toolbar, footer, background decorations */
+  /* 1. Global Reset & Hide all unwanted elements */
+  *,
+  *::before,
+  *::after {
+    visibility: hidden !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* 2. Hide specific UI components completely */
   nav,
-  footer,
   header,
+  footer,
   button,
   .no-print,
   [role="dialog"],
   .fixed,
   .sticky {
     display: none !important;
+    visibility: hidden !important;
   }
 
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-size: 12pt;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  /* 3. Make ONLY the printable question paper strictly visible at top-left */
+  #printable-question-paper,
+  #printable-question-paper * {
+    visibility: visible !important;
   }
 
-  main {
-    padding: 0 !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-  }
-
-  /* Target the question paper preview sheet exclusively */
   #printable-question-paper {
     display: block !important;
-    box-shadow: none !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     min-height: auto !important;
-    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
     background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
     text-rendering: optimizeLegibility;
   }
 
@@ -112,7 +126,8 @@ body {
 
   @page {
     size: A4 portrait;
-    margin: 10mm 12mm 12mm 12mm;
+    margin: 12mm 15mm 15mm 15mm;
   }
 }
+
 
