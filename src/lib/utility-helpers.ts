@@ -127,8 +127,22 @@ export const FORMULA_COLLECTION: FormulaItem[] = [
     variables: [
       { symbol: 'c', meaning: 'যোগজীকরণ ধ্রুবক (Constant of Integration)' }
     ]
+  },
+  {
+    id: 'f-11',
+    subject: 'Physics',
+    topic: 'জ্যামিতিক আলোকবিজ্ঞান',
+    title: 'স্নেলের সূত্র ও লেন্স সমীকরণ (Snell\'s Law & Lens Formula)',
+    formulaLatex: 'n_1 \\sin\\theta_1 = n_2 \\sin\\theta_2, \\quad \\frac{1}{f} = \\frac{1}{u} + \\frac{1}{v}',
+    description: 'আলোর প্রতিসরণ ও লেন্সের ফোকাস দূরত্ব ও প্রতিবিম্ব দূরত্ব নির্ণয়ের সূত্র।',
+    variables: [
+      { symbol: 'n', meaning: 'প্রতিসরাঙ্ক' },
+      { symbol: 'f', meaning: 'ফোকাস দূরত্ব' },
+      { symbol: 'u, v', meaning: 'বস্তুর দূরত্ব ও প্রতিবিম্ব দূরত্ব' }
+    ]
   }
 ];
+
 
 
 export function calculateSscHscGpa(subjects: GpaSubject[]): GpaResult {
