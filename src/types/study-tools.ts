@@ -54,4 +54,8 @@ export interface QuizDeck {
   description: string;
   cards: FlashcardItem[];
   quizQuestions: QuizQuestion[];
+  tags?: string[];
+  icon?: string;
+  totalCount?: number;
 }
+
