@@ -328,11 +328,12 @@ export const OmrGenerator: React.FC = () => {
           </div>
 
           {/* OMR MCQ Bubbles Grid */}
-          <div className="border-2 border-slate-900 rounded-lg p-4 bg-white">
-            <div className="text-center font-bold text-xs uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-2 mb-3 flex items-center justify-center gap-2">
-              <FileCheck className="w-4 h-4 text-indigo-600" />
+          <div className="border-2 border-slate-900 rounded-lg p-4 bg-white print:border-black print:p-2">
+            <div className="text-center font-bold text-xs uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-2 mb-3 flex items-center justify-center gap-2 print:border-black">
+              <FileCheck className="w-4 h-4 text-indigo-600 print:text-black" />
               <span>উত্তরপত্র বাবল সেকশন (ANSWER MATRIX)</span>
             </div>
+
 
             <div className={`grid gap-4 ${
               columns.length === 2 ? 'grid-cols-2' : columns.length === 3 ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-4'
