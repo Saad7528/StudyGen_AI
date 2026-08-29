@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { FlashcardItem, QuizQuestion, QuizDeck } from '../../types/study-tools';
 import { QuestionPaperData } from '../../types/question-paper';
 import { KaTeXViewer } from '../KaTeXViewer';
+import { FULL_DECK_COLLECTION } from '../../lib/quiz-flashcard-data';
 import { 
   Sparkles, 
   BrainCircuit, 
@@ -20,140 +21,12 @@ import {
   Shuffle, 
   HelpCircle,
   Trophy,
-  Play
+  Play,
+  Bookmark,
+  SlidersHorizontal,
+  Moon
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-
-const DEFAULT_DECKS: QuizDeck[] = [
-  {
-    id: 'physics',
-    title: 'পদার্থবিজ্ঞান: বল ও গতি',
-    subject: 'পদার্থবিজ্ঞান',
-    description: 'এইচএসসি ও এসএসসি স্তরের গতিবিদ্যা, নিউটনের সূত্র ও কাজের ধারণা।',
-    cards: [
-      {
-        id: 'p1',
-        front: 'নিউটনের দ্বিতীয় গতিসূত্রটি কী এবং এর থেকে কোন রাশির মান নির্ণয় করা যায়?',
-        back: 'বস্তুর ভরবেগের পরিবর্তনের হার প্রযুক্ত বলের সমানুপাতিক ($F = ma$)। এর সাহায্যে বলের মান পরিমাপ করা যায়।',
-        hint: 'F, m এবং a এর সম্পর্ক মনে করুন।'
-      },
-      {
-        id: 'p2',
-        front: 'মহাকর্ষীয় ধ্রুবক $G$ এর মান ও একক কত?',
-        back: '$G = 6.673 \\times 10^{-11}\\, N\\cdot m^2/kg^2$',
-        hint: 'একক $N\\cdot m^2/kg^2$'
-      },
-      {
-        id: 'p3',
-        front: 'কাজ-শক্তি উপপাদ্যটি (Work-Energy Theorem) কী?',
-        back: 'কোনো বস্তুর ওপর প্রযুক্ত বল দ্বারা কৃতকাজ তার গতিশক্তির পরিবর্তনের সমান ($W = \\Delta K = \\frac{1}{2}mv^2 - \\frac{1}{2}mu^2$)।',
-        hint: 'কৃতকাজ = শেষ গতিশক্তি - আদি গতিশক্তি'
-      }
-    ],
-    quizQuestions: [
-      {
-        id: 'pq1',
-        question: 'অভিকর্ষজ ত্বরণ $g$-এর মান পৃথিবীর কোথায় সবচেয়ে বেশি?',
-        options: ['মেরু অঞ্চলে', 'বিষুব অঞ্চলে', 'ক্রান্তীয় অঞ্চলে', 'পৃথিবীর কেন্দ্রে'],
-        correctIndex: 0,
-        explanation: 'পৃথিবী মেরু অঞ্চলে সামান্য চ্যাপ্টা হওয়ায় ব্যাসার্ধ $R$ কম, তাই $g = \\frac{GM}{R^2}$ অনুযায়ী মেরুতে $g$-এর মান সর্বাধিক ($9.83\\, m/s^2$)।'
-      },
-      {
-        id: 'pq2',
-        question: '১ কিলোওয়াট-ঘণ্টা (1 kWh) সমান কত জুল?',
-        options: ['$3.6 \\times 10^5\\, J$', '$3.6 \\times 10^6\\, J$', '$1000\\, J$', '$3600\\, J$'],
-        correctIndex: 1,
-        explanation: '$1\\, kWh = 1000\\, W \\times 3600\\, s = 3.6 \\times 10^6\\, J$'
-      },
-      {
-        id: 'pq3',
-        question: 'নিচের কোনটি ভেক্টর রাশি?',
-        options: ['দ্রুতি', 'কাজ', 'তড়িৎ বিভব', 'তড়িৎ তীব্রতা'],
-        correctIndex: 3,
-        explanation: 'তড়িৎ তীব্রতার নির্দিষ্ট মান ও দিক উভয়ই আছে, তাই এটি একটি ভেক্টর রাশি।'
-      }
-    ]
-  },
-  {
-    id: 'ict',
-    title: 'আইসিটি: লজিক গেইট ও বুলিয়ান',
-    subject: 'তথ্য ও যোগাযোগ প্রযুক্তি',
-    description: 'ডিজিটাল লজিক গেইট, সার্বজনীন গেইট ও বুলিয়ান সরলীকরণ।',
-    cards: [
-      {
-        id: 'i1',
-        front: 'ডি-মরগ্যানের প্রথম উপপাদ্যটি কী?',
-        back: '$\\overline{A + B} = \\overline{A} \\cdot \\overline{B}$ (যেকোনো সংখ্যক চলকের যৌক্তিক যোগের পূরক তাদের প্রত্যেকের পূরকের যৌক্তিক গুণের সমান)',
-        hint: 'যোগের কমপ্লিমেন্ট গুণের সমান'
-      },
-      {
-        id: 'i2',
-        front: 'সার্বজনীন গেইট (Universal Gates) কোনগুলো এবং কেন এদের সার্বজনীন বলা হয়?',
-        back: 'NAND এবং NOR গেইট। কারণ এই দুটি গেইট দিয়ে সব মৌলিক গেইটসহ যেকোনো ডিজিটাল সার্কিট বাস্তবায়ন সম্ভব।',
-        hint: 'দুটি বিশেষ গেইট'
-      },
-      {
-        id: 'i3',
-        front: 'বুলিয়ান অ্যালজেব্রায় $A + \\overline{A}$ এর মান কত?',
-        back: '$A + \\overline{A} = 1$',
-        hint: 'চলক এবং তার কমপ্লিমেন্টের যোগফল সবসময় ১'
-      }
-    ],
-    quizQuestions: [
-      {
-        id: 'iq1',
-        question: 'একটি ৩-ইনপুট বিশিষ্ট AND গেইটের আউটপুট ১ হতে হলে ইনপুট কী হতে হবে?',
-        options: ['যেকোনো ১টি ইনপুট ১', 'সকল ইনপুট ১', 'সকল ইনপুট ০', 'বিজড় সংখ্যক ইনপুট ১'],
-        correctIndex: 1,
-        explanation: 'AND গেইটে সবগুলো ইনপুট High বা 1 হলেই কেবল আউটপুট 1 পাওয়া যায়।'
-      },
-      {
-        id: 'iq2',
-        question: '$A \\oplus B$ নির্দেশ করে কোন গেইট?',
-        options: ['XOR', 'XNOR', 'NAND', 'NOR'],
-        correctIndex: 0,
-        explanation: 'এটি Exclusive-OR (XOR) গেইটের সমীকরণ ($A\\overline{B} + \\overline{A}B$)।'
-      }
-    ]
-  },
-  {
-    id: 'math',
-    title: 'উচ্চতর গণিত: ত্রিকোণমিতি ও ক্যালকুলাস',
-    subject: 'উচ্চতর গণিত',
-    description: 'এইচএসসি ও এসএসসি উচ্চতর গণিতের গুরুত্বপূর্ণ অভেদ ও অন্তরীকরণ।',
-    cards: [
-      {
-        id: 'm1',
-        front: '$\\sin 2\\theta$ এর ত্রিকোণমিতিক সূত্রটি কী?',
-        back: '$\\sin 2\\theta = 2\\sin\\theta\\cos\\theta = \\frac{2\\tan\\theta}{1 + \\tan^2\\theta}$',
-        hint: 'সাইন ও কস উভয়ের গুণফল'
-      },
-      {
-        id: 'm2',
-        front: '$\\frac{d}{dx}(\\ln x)$ এবং $\\frac{d}{dx}(e^x)$ এর মান কত?',
-        back: '$\\frac{d}{dx}(\\ln x) = \\frac{1}{x}$ এবং $\\frac{d}{dx}(e^x) = e^x$',
-        hint: 'লগ ও এক্সপোনেনশিয়াল ডেরিভেটিভ'
-      }
-    ],
-    quizQuestions: [
-      {
-        id: 'mq1',
-        question: 'যদি $\\sin\\theta = \\frac{1}{2}$ হয়, তবে $\\theta$ এর মান কত ($0^\\circ \\le \\theta \\le 90^\\circ$)?',
-        options: ['$30^\\circ$', '$45^\\circ$', '$60^\\circ$', '$90^\\circ$'],
-        correctIndex: 0,
-        explanation: '$\\sin 30^\\circ = \\frac{1}{2}$ বা $\\frac{\\pi}{6}$ রেডিয়ান।'
-      },
-      {
-        id: 'mq2',
-        question: '$\\frac{d}{dx}(x^3 + 5x)$ এর অন্তরজ কত?',
-        options: ['$3x^2 + 5$', '$3x^2 + 5x$', '$x^2 + 5$', '$3x + 5$'],
-        correctIndex: 0,
-        explanation: 'পাওয়ার রুল অনুযায়ী: $\\frac{d}{dx}(x^3) = 3x^2$ এবং $\\frac{d}{dx}(5x) = 5$।'
-      }
-    ]
-  }
-];
-
 
 interface QuizFlashcardPracticeProps {
   paperData?: QuestionPaperData;
@@ -161,16 +34,18 @@ interface QuizFlashcardPracticeProps {
 
 export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ paperData }) => {
   const [activeMode, setActiveMode] = useState<'flashcards' | 'quiz'>('flashcards');
-  const [selectedDeckId, setSelectedDeckId] = useState('physics');
-  const [decks, setDecks] = useState<QuizDeck[]>(DEFAULT_DECKS);
+  const [selectedDeckId, setSelectedDeckId] = useState('islamic');
+  const [decks, setDecks] = useState<QuizDeck[]>(FULL_DECK_COLLECTION);
 
   // Flashcard states
   const [cardIndex, setCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [masteredCards, setMasteredCards] = useState<Set<string>>(new Set());
+  const [jumpInput, setJumpInput] = useState('');
 
   // Quiz states
+  const [quizQuestionLimit, setQuizQuestionLimit] = useState<number>(25);
   const [quizIndex, setQuizIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
@@ -215,7 +90,7 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
       if (paperMCQs.length > 0) {
         const customDeck: QuizDeck = {
           id: 'from-paper',
-          title: `প্রশ্নপত্র ডেক: ${paperData.header.subject || 'পরীক্ষা'}`,
+          title: `প্রশ্নপত্র ডেক: ${paperData.header.subject || 'পরীক্ষা'} (${paperMCQs.length} প্রশ্ন)`,
           subject: paperData.header.subject || 'পরীক্ষা প্রশ্নপত্র',
           description: 'বর্তমান তৈরিকৃত প্রশ্নপত্র থেকে সংগৃহীত কুইজ ও ফ্ল্যাশকার্ড।',
           cards: paperFlashcards,
@@ -229,9 +104,42 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
   }, [paperData]);
 
   const currentDeck = decks.find((d) => d.id === selectedDeckId) || decks[0];
+  const activeQuizQuestions = currentDeck.quizQuestions.slice(
+    0,
+    Math.min(quizQuestionLimit, currentDeck.quizQuestions.length)
+  );
+
+  // Shuffle flashcard deck
+  const handleShuffleDeck = () => {
+    setDecks((prev) =>
+      prev.map((d) => {
+        if (d.id === selectedDeckId) {
+          const shuffledCards = [...d.cards].sort(() => Math.random() - 0.5);
+          return { ...d, cards: shuffledCards };
+        }
+        return d;
+      })
+    );
+    setCardIndex(0);
+    setIsFlipped(false);
+    setShowHint(false);
+    confetti({ particleCount: 30, spread: 50 });
+  };
+
+  const handleJumpToCard = (e: React.FormEvent) => {
+    e.preventDefault();
+    const num = parseInt(jumpInput, 10);
+    if (!isNaN(num) && num >= 1 && num <= currentDeck.cards.length) {
+      setCardIndex(num - 1);
+      setIsFlipped(false);
+      setShowHint(false);
+      setJumpInput('');
+    }
+  };
 
   // Timer logic for Quiz
   useEffect(() => {
+
     let interval: any = null;
     if (timerActive && !quizCompleted) {
       interval = setInterval(() => {
@@ -302,27 +210,27 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
   };
 
   const currentCard = currentDeck.cards[cardIndex];
-  const currentQuizQ = currentDeck.quizQuestions[quizIndex];
+  const currentQuizQ = activeQuizQuestions[quizIndex];
 
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 p-0.5 shadow-md">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-emerald-500 p-0.5 shadow-md">
             <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
               <BrainCircuit className="w-6 h-6 text-amber-500" />
             </div>
           </div>
           <div>
             <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-              Interactive Flashcards & Quiz Practice
-              <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold">
-                কুইজ ও রিভিশন
+              Interactive Flashcards & Timed Quiz Practice
+              <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+                ১০০+ প্রশ্নভাণ্ডার
               </span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              ফ্ল্যাশকার্ড দিয়ে সক্রিয় পুনরাবৃত্তি (Active Recall) এবং লাইভ টাইমার দিয়ে MCQ কুইজ প্র্যাকটিস করুন।
+              ইসলামিক জ্ঞান, বিজ্ঞান, ম্যাথ ও আইসিটির সমৃদ্ধ প্রশ্নভাণ্ডার থেকে সক্রিয় পুনরাবৃত্তি ও লাইভ MCQ কুইজ।
             </p>
           </div>
         </div>
@@ -338,7 +246,7 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
                 : 'text-slate-600 dark:text-slate-300 hover:text-amber-500'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" /> ফ্ল্যাশকার্ড ডেক
+            <Layers className="w-3.5 h-3.5" /> ফ্ল্যাশকার্ড ডেক ({currentDeck.cards.length})
           </button>
           <button
             type="button"
@@ -352,36 +260,59 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
                 : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600'
             }`}
           >
-            <Timer className="w-3.5 h-3.5" /> লাইভ MCQ কুইজ
+            <Timer className="w-3.5 h-3.5" /> লাইভ MCQ কুইজ ({activeQuizQuestions.length})
           </button>
         </div>
       </div>
 
-      {/* Deck Selector */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
-        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">
-          ডেক নির্বাচন:
-        </span>
-        {decks.map((deck) => (
-          <button
-            key={deck.id}
-            type="button"
-            onClick={() => {
-              setSelectedDeckId(deck.id);
-              setCardIndex(0);
-              setIsFlipped(false);
-              setQuizIndex(0);
-              setQuizCompleted(false);
-            }}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
-              selectedDeckId === deck.id
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md'
-                : 'bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-amber-500'
-            }`}
-          >
-            {deck.title}
-          </button>
-        ))}
+      {/* Deck Selector Pills */}
+      <div className="p-4 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-md space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+            বিষয়ভিত্তিক ডেক নির্বাচন করুন:
+          </span>
+          <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
+            মোট ৪টি পূর্ণাঙ্গ ডেক (প্রতিটিতে ১০০টি কার্ড ও কুইজ)
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          {decks.map((deck) => (
+            <button
+              key={deck.id}
+              type="button"
+              onClick={() => {
+                setSelectedDeckId(deck.id);
+                setCardIndex(0);
+                setIsFlipped(false);
+                setShowHint(false);
+                setQuizIndex(0);
+                setQuizCompleted(false);
+                setScore(0);
+                setSeconds(0);
+              }}
+              className={`px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap flex items-center gap-2 transition-all ${
+                selectedDeckId === deck.id
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md scale-[1.02]'
+                  : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              {deck.id === 'islamic' ? (
+                <Moon className="w-3.5 h-3.5 text-emerald-500" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              )}
+              <span>{deck.title}</span>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${
+                selectedDeckId === deck.id 
+                  ? 'bg-white/20 dark:bg-slate-900/20 text-white dark:text-slate-900 font-extrabold'
+                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+              }`}>
+                {deck.cards.length}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ==========================================
@@ -389,15 +320,45 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
          ========================================== */}
       {activeMode === 'flashcards' && (
         <div className="max-w-2xl mx-auto space-y-4">
-          {/* Progress & Stats */}
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400 px-2">
-            <span>
-              কার্ড {cardIndex + 1} / {currentDeck.cards.length}
-            </span>
-            <div className="flex items-center gap-2">
+          {/* Progress & Quick Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-slate-600 dark:text-slate-400 px-2">
+            <div className="flex items-center gap-3">
+              <span className="font-bold text-slate-900 dark:text-white">
+                কার্ড {cardIndex + 1} / {currentDeck.cards.length}
+              </span>
               <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
                 <CheckCircle2 className="w-3.5 h-3.5" /> মুখস্থ: {masteredCards.size}
               </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleShuffleDeck}
+                className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition"
+                title="কার্ডগুলোর ক্রম র‍্যান্ডমাইজ করুন"
+              >
+                <Shuffle className="w-3 h-3 text-amber-500" /> র‍্যান্ডমাইজ
+              </button>
+
+              {/* Jump to card input */}
+              <form onSubmit={handleJumpToCard} className="flex items-center gap-1">
+                <input
+                  type="number"
+                  min="1"
+                  max={currentDeck.cards.length}
+                  value={jumpInput}
+                  onChange={(e) => setJumpInput(e.target.value)}
+                  placeholder="নং..."
+                  className="w-14 px-2 py-1 text-xs rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-center focus:ring-1 focus:ring-amber-500"
+                />
+                <button
+                  type="submit"
+                  className="px-2 py-1 rounded-xl bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 transition"
+                >
+                  যান
+                </button>
+              </form>
             </div>
           </div>
 
@@ -456,9 +417,9 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
                 <button
                   type="button"
                   onClick={() => handleToggleMastered(currentCard.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
                     masteredCards.has(currentCard.id)
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-emerald-600 text-white shadow-md'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white'
                   }`}
                 >
@@ -483,11 +444,7 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
 
             <button
               type="button"
-              onClick={() => {
-                setIsFlipped(false);
-                setShowHint(false);
-                setCardIndex((prev) => (prev + 1) % currentDeck.cards.length);
-              }}
+              onClick={handleNextCard}
               className="px-6 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold flex items-center gap-1 shadow-md shadow-amber-500/20 transition"
             >
               পরের কার্ড <ChevronRight className="w-4 h-4" />
@@ -501,12 +458,36 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
          ========================================== */}
       {activeMode === 'quiz' && (
         <div className="max-w-2xl mx-auto space-y-4">
+          {/* Question Limit Switcher */}
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 text-xs font-semibold">
+            <span className="text-slate-600 dark:text-slate-300">কুইজের দৈর্ঘ্য:</span>
+            <div className="flex items-center gap-1.5">
+              {[10, 25, 50, 100].map((count) => (
+                <button
+                  key={count}
+                  type="button"
+                  onClick={() => {
+                    setQuizQuestionLimit(count);
+                    handleRestartQuiz();
+                  }}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-bold transition ${
+                    quizQuestionLimit === count
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  {count === 100 ? '১০০টি (পূর্ণাঙ্গ)' : `${count}টি`}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {!quizCompleted && currentQuizQ ? (
             <div className="space-y-4">
               {/* Quiz Status Bar */}
               <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm text-xs font-bold">
                 <span className="text-slate-600 dark:text-slate-300">
-                  প্রশ্ন {quizIndex + 1} / {currentDeck.quizQuestions.length}
+                  প্রশ্ন {quizIndex + 1} / {activeQuizQuestions.length}
                 </span>
                 <span className="text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
                   <Timer className="w-4 h-4 animate-spin text-indigo-500" /> সময়: {seconds} সে.
@@ -584,7 +565,7 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
                     onClick={handleNextQuizQuestion}
                     className="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 flex items-center gap-1.5 transition animate-fade-in"
                   >
-                    {quizIndex < currentDeck.quizQuestions.length - 1 ? 'পরবর্তী প্রশ্ন' : 'ফলাফল দেখুন'}
+                    {quizIndex < activeQuizQuestions.length - 1 ? 'পরবর্তী প্রশ্ন' : 'ফলাফল দেখুন'}
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -602,7 +583,7 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
                   কুইজ সম্পন্ন হয়েছে! 🎉
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  আপনি সবগুলো প্রশ্নের উত্তর দিয়েছেন।
+                  আপনি {activeQuizQuestions.length}টি প্রশ্নের কুইজ সম্পন্ন করেছেন।
                 </p>
               </div>
 
@@ -610,7 +591,7 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
               <div className="grid grid-cols-3 gap-3 max-w-md mx-auto text-center">
                 <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                   <span className="text-[11px] text-slate-400 block font-semibold">মোট প্রশ্ন</span>
-                  <span className="text-lg font-black text-slate-900 dark:text-white">{currentDeck.quizQuestions.length}</span>
+                  <span className="text-lg font-black text-slate-900 dark:text-white">{activeQuizQuestions.length}</span>
                 </div>
                 <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900">
                   <span className="text-[11px] text-emerald-600 block font-semibold">সঠিক উত্তর</span>
@@ -638,3 +619,4 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
     </div>
   );
 };
+
