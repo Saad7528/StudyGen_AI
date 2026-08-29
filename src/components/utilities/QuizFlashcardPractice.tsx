@@ -473,8 +473,13 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
               পরের কার্ড <ChevronRight className="w-4 h-4" />
             </button>
           </div>
+
+          <p className="text-[11px] text-center text-slate-400 dark:text-slate-500">
+            টিপস: কীবোর্ডের <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">Space</kbd> দিয়ে উল্টান, <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">←</kbd> ও <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">→</kbd> দিয়ে নেভিগেট করুন।
+          </p>
         </div>
       )}
+
 
       {/* ==========================================
           MODE 2: TIMED MCQ QUIZ
