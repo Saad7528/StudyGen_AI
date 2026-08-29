@@ -23,11 +23,14 @@ export const metadata: Metadata = {
     'Question Paper Generator',
     'OMR Sheet Generator',
     'AI Study Sheet',
+    'Islamic Knowledge Flashcards',
+    'Islamic MCQ Quiz Bank',
     'Bengali OCR',
     'Equation Solver',
     'Bangladesh Education',
     'HSC SSC Question Maker'
   ],
+
   authors: [{ name: 'S. M. Amirul Islam Saad' }],
   icons: {
     icon: [
