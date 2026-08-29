@@ -3,7 +3,8 @@
 import React from 'react';
 import { QuestionPaperData, QuestionItem } from '../../types/question-paper';
 import { KaTeXViewer } from '../KaTeXViewer';
-import { Columns, Layout, Printer, Download, Copy, Check } from 'lucide-react';
+import { Columns, Layout, Printer, Download, Copy, Check, Sparkles, FileDown, ShieldCheck } from 'lucide-react';
+import { formatMathAndTextForDocx } from '../../lib/docx-generator';
 
 interface PaperPreviewProps {
   data: QuestionPaperData;
@@ -18,36 +19,116 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
 }) => {
   const [copied, setCopied] = React.useState(false);
 
-  const handleCopyText = () => {
-    // Generate clean plain text formatted for quick pasting
-    let text = `${data.header.schoolName}\n${data.header.examTitle}\n`;
+  const handleCopyText = async () => {
+    // 1. Clean plain text version
+    let plain = `${formatMathAndTextForDocx(data.header.schoolName)}\n${formatMathAndTextForDocx(data.header.examTitle)}\n`;
     if (data.header.className || data.header.subject) {
-      text += `শ্রেণি: ${data.header.className} | বিষয়: ${data.header.subject}\n`;
+      plain += `শ্রেণি: ${data.header.className} | বিষয়: ${data.header.subject}\n`;
     }
-    text += `সময়: ${data.header.timeAllowed} | পূর্ণমান: ${data.header.fullMarks}\n`;
-    text += `--------------------------------------------------\n\n`;
+    plain += `সময়: ${data.header.timeAllowed} | পূর্ণমান: ${data.header.fullMarks}\n`;
+    plain += `--------------------------------------------------\n\n`;
+
+    // 2. Rich HTML version formatted specifically for Google Docs & Word paste
+    let html = `<div style="font-family: 'Noto Sans Bengali', Arial, sans-serif; font-size: 12pt; color: #000000; line-height: 1.5;">`;
+
+    if (data.header.schoolName) {
+      html += `<div style="text-align: center; font-size: 16pt; font-weight: bold; margin-bottom: 4px;">${formatMathAndTextForDocx(data.header.schoolName)}</div>`;
+    }
+    if (data.header.examTitle) {
+      html += `<div style="text-align: center; font-size: 13pt; font-weight: bold; margin-bottom: 6px;">${formatMathAndTextForDocx(data.header.examTitle)}</div>`;
+    }
+
+    const classSub = [
+      data.header.className ? `শ্রেণি: ${data.header.className}` : '',
+      data.header.subject ? `বিষয়: ${data.header.subject}` : '',
+      data.header.subjectCode ? `(বিষয় কোড: ${data.header.subjectCode})` : ''
+    ].filter(Boolean).join('  |  ');
+
+    if (classSub) {
+      html += `<div style="text-align: center; font-size: 11pt; font-weight: bold; margin-bottom: 8px;">${formatMathAndTextForDocx(classSub)}</div>`;
+    }
+
+    // Header Table for Time & Full Marks
+    html += `<table style="width: 100%; border-collapse: collapse; border-bottom: 1.5px solid #333; margin-bottom: 12px; font-weight: bold; font-size: 11pt;">
+      <tr>
+        <td style="text-align: left; padding: 4px 0;">${data.header.timeAllowed ? 'সময়: ' + formatMathAndTextForDocx(data.header.timeAllowed) : ''}</td>
+        <td style="text-align: right; padding: 4px 0;">${data.header.fullMarks ? 'পূর্ণমান: ' + formatMathAndTextForDocx(data.header.fullMarks) : ''}</td>
+      </tr>
+    </table>`;
+
+    if (data.header.generalInstructions) {
+      html += `<div style="text-align: center; font-style: italic; font-size: 10.5pt; margin-bottom: 14px;">[ ${formatMathAndTextForDocx(data.header.generalInstructions)} ]</div>`;
+    }
 
     data.sections.forEach((sec) => {
-      text += `\n[ ${sec.title} ]\n${sec.instruction || ''} (${sec.totalMarks || ''})\n\n`;
+      plain += `\n[ ${formatMathAndTextForDocx(sec.title)} ]\n${formatMathAndTextForDocx(sec.instruction || '')} (${formatMathAndTextForDocx(sec.totalMarks || '')})\n\n`;
+
+      html += `<div style="text-align: center; font-weight: bold; font-size: 13pt; text-decoration: underline; margin-top: 18px; margin-bottom: 4px;">${formatMathAndTextForDocx(sec.title)}</div>`;
+
+      if (sec.instruction || sec.totalMarks) {
+        html += `<div style="text-align: center; font-style: italic; font-weight: bold; font-size: 10.5pt; margin-bottom: 10px;">${formatMathAndTextForDocx(sec.instruction || '')} ${sec.totalMarks ? '(' + formatMathAndTextForDocx(sec.totalMarks) + ')' : ''}</div>`;
+      }
+
       sec.questions.forEach((q) => {
         if (q.type === 'cq') {
-          text += `${q.number}। ${q.stem || ''}\n`;
+          const stemText = q.stem ? `${q.number}। ${formatMathAndTextForDocx(q.stem)}` : `${q.number}। ${formatMathAndTextForDocx(q.text)}`;
+          plain += `${stemText}\n`;
+          html += `<div style="margin-top: 10px; margin-bottom: 4px; font-weight: ${q.stem ? 'normal' : 'bold'};">${stemText}</div>`;
+
           q.subQuestions?.forEach((sub) => {
-            text += `   (${sub.label}) ${sub.text} [${sub.marks}]\n`;
+            plain += `   (${sub.label}) ${formatMathAndTextForDocx(sub.text)} [${formatMathAndTextForDocx(sub.marks)}]\n`;
+            html += `<div style="margin-left: 24px; margin-bottom: 3px;"><b>(${sub.label})</b> ${formatMathAndTextForDocx(sub.text)} ${sub.marks ? '<b>[' + formatMathAndTextForDocx(sub.marks) + ']</b>' : ''}</div>`;
           });
         } else if (q.type === 'mcq') {
-          text += `${q.number}। ${q.text}\n`;
-          q.options?.forEach((opt) => {
-            text += `   (${opt.label}) ${opt.text}\n`;
-          });
+          const mcqText = `${q.number}। ${formatMathAndTextForDocx(q.text)}`;
+          plain += `${mcqText}\n`;
+          html += `<div style="margin-top: 8px; margin-bottom: 4px;">${mcqText} ${q.marks ? '<b>[' + formatMathAndTextForDocx(q.marks) + ']</b>' : ''}</div>`;
+
+          if (q.options?.length) {
+            html += `<table style="width: 100%; border-collapse: collapse; margin-left: 20px; margin-bottom: 6px;">`;
+            for (let i = 0; i < q.options.length; i += 2) {
+              const opt1 = q.options[i];
+              const opt2 = q.options[i + 1];
+              html += `<tr>
+                <td style="width: 50%; padding: 2px 0;"><b>(${opt1.label})</b> ${formatMathAndTextForDocx(opt1.text)}</td>
+                <td style="width: 50%; padding: 2px 0;">${opt2 ? '<b>(' + opt2.label + ')</b> ' + formatMathAndTextForDocx(opt2.text) : ''}</td>
+              </tr>`;
+              plain += `   (${opt1.label}) ${formatMathAndTextForDocx(opt1.text)}        ${opt2 ? '(' + opt2.label + ') ' + formatMathAndTextForDocx(opt2.text) : ''}\n`;
+            }
+            html += `</table>`;
+          }
         } else {
-          text += `${q.number}। ${q.text} [${q.marks}]\n`;
+          const standardText = `${q.number}। ${formatMathAndTextForDocx(q.text || q.stem || '')}`;
+          plain += `${standardText} [${formatMathAndTextForDocx(q.marks)}]\n`;
+          html += `<div style="margin-top: 8px; margin-bottom: 4px;"><b>${q.number}।</b> ${formatMathAndTextForDocx(q.text || q.stem || '')} ${q.marks ? '<b>[' + formatMathAndTextForDocx(q.marks) + ']</b>' : ''}</div>`;
+
+          q.subQuestions?.forEach((sub) => {
+            plain += `   (${sub.label}) ${formatMathAndTextForDocx(sub.text)} [${formatMathAndTextForDocx(sub.marks)}]\n`;
+            html += `<div style="margin-left: 24px; margin-bottom: 3px;"><b>(${sub.label})</b> ${formatMathAndTextForDocx(sub.text)} ${sub.marks ? '<b>[' + formatMathAndTextForDocx(sub.marks) + ']</b>' : ''}</div>`;
+          });
         }
-        text += '\n';
+        plain += '\n';
       });
     });
 
-    navigator.clipboard.writeText(text);
+    html += `</div>`;
+
+    try {
+      if (navigator.clipboard && window.ClipboardItem) {
+        const textBlob = new Blob([plain], { type: 'text/plain' });
+        const htmlBlob = new Blob([html], { type: 'text/html' });
+        const clipboardItem = new ClipboardItem({
+          'text/plain': textBlob,
+          'text/html': htmlBlob
+        });
+        await navigator.clipboard.write([clipboardItem]);
+      } else {
+        await navigator.clipboard.writeText(plain);
+      }
+    } catch (e) {
+      await navigator.clipboard.writeText(plain);
+    }
+
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -56,67 +137,116 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
     window.print();
   };
 
-  return (
-    <div className="space-y-4">
-      {/* Action Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-md">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold text-slate-700 dark:text-slate-300 w-full sm:w-auto">
-            লেআউট মোড:
-          </span>
-          <button
-            type="button"
-            onClick={onToggleColumns}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
-              data.twoColumnLayout
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-            }`}
-          >
-            <Columns className="w-3.5 h-3.5" /> ২-কলাম (বোর্ড)
-          </button>
-          <button
-            type="button"
-            onClick={onToggleColumns}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
-              !data.twoColumnLayout
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-            }`}
-          >
-            <Layout className="w-3.5 h-3.5" /> ১-কলাম স্ট্যান্ডার্ড
-          </button>
-        </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={handleCopyText}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition"
-            title="গুগল ডকে সরাসরি পেস্ট করার জন্য কপি করুন"
-          >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-            {copied ? 'কপি হয়েছে!' : 'কপি'}
-          </button>
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition"
-            title="সরাসরি প্রিন্ট অথবা পিডিএফ (Save as PDF) হিসেবে ডাউনলোড করুন"
-          >
-            <Printer className="w-3.5 h-3.5" /> প্রিন্ট / PDF
-          </button>
-          <button
-            type="button"
-            onClick={onOpenExportModal}
-            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-md shadow-indigo-500/20 flex items-center gap-1.5 transition"
-          >
-            <Download className="w-3.5 h-3.5" /> .docx এক্সপোর্ট
-          </button>
+  return (
+    <div className="space-y-5">
+      {/* Ultra-Premium Glassmorphic Action Toolbar */}
+      <div className="relative overflow-hidden p-3 sm:p-4 rounded-3xl bg-gradient-to-r from-white/90 via-indigo-50/40 to-white/90 dark:from-slate-900/90 dark:via-indigo-950/30 dark:to-slate-900/90 border border-indigo-100/80 dark:border-indigo-900/40 backdrop-blur-2xl shadow-xl shadow-indigo-500/5 transition-all">
+        {/* Ambient Top Glow Line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
+
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          
+          {/* Left: Layout Mode Segmented Switcher */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
+              <span>লেআউট মোড:</span>
+            </div>
+
+            <div className="flex items-center p-1 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-inner">
+              <button
+                type="button"
+                onClick={onToggleColumns}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 ${
+                  data.twoColumnLayout
+                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30 scale-[1.02]'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60'
+                }`}
+                title="বোর্ড স্ট্যান্ডার্ড ২-কলাম প্রশ্নপত্র ফরম্যাট"
+              >
+                <Columns className="w-3.5 h-3.5" />
+                <span>২-কলাম (বোর্ড)</span>
+                {data.twoColumnLayout && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={onToggleColumns}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 ${
+                  !data.twoColumnLayout
+                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30 scale-[1.02]'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60'
+                }`}
+                title="১-কলাম ক্লাসিক প্রশ্নপত্র ফরম্যাট"
+              >
+                <Layout className="w-3.5 h-3.5" />
+                <span>১-কলাম স্ট্যান্ডার্ড</span>
+                {!data.twoColumnLayout && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Right: Premium Action Buttons */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Copy Button */}
+            <button
+              type="button"
+              onClick={handleCopyText}
+              className="px-3.5 py-2 rounded-2xl bg-white dark:bg-slate-800/90 hover:bg-slate-50 dark:hover:bg-slate-700/90 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all"
+              title="গুগল ডকে সরাসরি পেস্ট করার জন্য ফরম্যাটেড টেক্সট কপি করুন"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">কপি হয়েছে!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-slate-500" />
+                  <span>কপি টেক্সট</span>
+                </>
+              )}
+            </button>
+
+            {/* Print / Save as PDF Button */}
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="group relative px-4 py-2 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-xs font-bold shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+              title="সরাসরি শুধুমাত্র প্রশ্নপত্রটিকে A4 সাইজে প্রিন্ট বা PDF হিসেবে সেভ করুন"
+            >
+              <div className="p-1 rounded-lg bg-white/10 dark:bg-slate-900/10 group-hover:rotate-12 transition-transform">
+                <Printer className="w-3.5 h-3.5 text-cyan-400 dark:text-indigo-600" />
+              </div>
+              <span>প্রিন্ট / PDF</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 dark:text-indigo-600 font-extrabold">
+                A4 রেডি
+              </span>
+            </button>
+
+            {/* .docx Export Flagship Button */}
+            <button
+              type="button"
+              onClick={onOpenExportModal}
+              className="relative px-5 py-2 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white text-xs font-extrabold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-105 active:scale-95 flex items-center gap-2 transition-all overflow-hidden group"
+              title="সম্পূর্ণ ১০০% এডিটেবল Microsoft Word (.docx) ফাইল ডাউনলোড করুন"
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              <Download className="w-3.5 h-3.5 animate-bounce relative z-10" />
+              <span className="relative z-10">.docx এক্সপোর্ট</span>
+            </button>
+          </div>
+
         </div>
       </div>
 
       {/* Real Paper Preview Container (A4 Look) */}
+
       <div 
         id="printable-question-paper" 
         className={`relative bg-white text-slate-900 shadow-2xl rounded-2xl p-6 sm:p-12 md:p-14 border border-slate-200 max-w-4xl mx-auto min-h-[750px] sm:min-h-[950px] font-sans antialiased select-text overflow-hidden ${
