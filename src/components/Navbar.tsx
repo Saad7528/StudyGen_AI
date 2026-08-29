@@ -175,7 +175,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
               }`}
             >
               <span>কুইজ ও ফ্ল্যাশকার্ড</span>
+              <span className="text-[9px] font-bold uppercase px-1.5 py-0.2 rounded-md bg-emerald-500 text-white">
+                ১০০+
+              </span>
             </button>
+
 
             {/* 5. More Academy & Math Tools Dropdown */}
             <div className="relative" ref={dropdownRef}>
