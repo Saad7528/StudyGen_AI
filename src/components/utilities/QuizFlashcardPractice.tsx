@@ -209,8 +209,31 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
     setTimerActive(true);
   };
 
+  // Keyboard navigation for Flashcards
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (activeMode !== 'flashcards') return;
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.code === 'Space' || e.code === 'Enter') {
+        e.preventDefault();
+        setIsFlipped((prev) => !prev);
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        handleNextCard();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        handlePrevCard();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeMode, currentDeck.cards.length]);
+
   const currentCard = currentDeck.cards[cardIndex];
   const currentQuizQ = activeQuizQuestions[quizIndex];
+
 
   return (
     <div className="space-y-6 animate-fade-in">
