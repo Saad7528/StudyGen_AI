@@ -34,13 +34,14 @@ export const Footer: React.FC = () => {
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5 text-amber-500">
-              <Sparkles className="w-4 h-4" /> ফ্ল্যাশকার্ড ও কুইজ
+              <Sparkles className="w-4 h-4" /> ১০০+ ইসলামিক ও STEM কুইজ
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5 text-pink-500">
               <Sparkles className="w-4 h-4" /> এআই স্টাডি সামারি
             </span>
           </div>
+
 
         </div>
 
