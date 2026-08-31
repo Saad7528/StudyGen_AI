@@ -100,22 +100,30 @@ export function calculateTextStatistics(text: string): TextStatistics {
 function tokenize(text: string, mode: DiffMode, options: DiffOptions): string[] {
   if (!text) return [];
 
+  let processedText = text;
+  if (options.ignoreEmptyLines) {
+    processedText = text
+      .split(/\r?\n/)
+      .filter((l) => l.trim().length > 0)
+      .join('\n');
+  }
+
   if (mode === 'char') {
-    return Array.from(text);
+    return Array.from(processedText);
   }
 
   if (mode === 'word') {
     const tokens: string[] = [];
     const regex = /([\p{L}\p{N}_\-]+|[^\p{L}\p{N}_\-\s]+|\s+)/gu;
     let match;
-    while ((match = regex.exec(text)) !== null) {
+    while ((match = regex.exec(processedText)) !== null) {
       tokens.push(match[0]);
     }
     return tokens;
   }
 
   // Line mode
-  let rawLines = text.split(/\r?\n/);
+  let rawLines = processedText.split(/\r?\n/);
   if (options.ignoreEmptyLines) {
     rawLines = rawLines.filter((l) => l.trim().length > 0);
   }
@@ -124,6 +132,7 @@ function tokenize(text: string, mode: DiffMode, options: DiffOptions): string[] 
   }
   return rawLines;
 }
+
 
 /**
  * Myers / LCS Algorithm implementation for finding sequence differences.
@@ -235,8 +244,18 @@ export function computeDiff(
     totalTokens > 0 ? Math.round(((unchangedCount * 2) / totalTokens) * 100) : 100;
 
   // Build Split Line Diff (Side-by-Side View)
-  const linesA = originalText.split(/\r?\n/);
-  const linesB = modifiedText.split(/\r?\n/);
+  let linesA = originalText.split(/\r?\n/);
+  let linesB = modifiedText.split(/\r?\n/);
+
+  if (options.ignoreEmptyLines) {
+    linesA = linesA.filter((l) => l.trim().length > 0);
+    linesB = linesB.filter((l) => l.trim().length > 0);
+  }
+  if (options.ignoreLineOrder) {
+    linesA = [...linesA].sort();
+    linesB = [...linesB].sort();
+  }
+
   const lineDiffRaw = lcsDiff(linesA, linesB, compareEquality);
 
   const leftLines: { lineNum: number; content: string; type: DiffType; subParts?: DiffPart[] }[] = [];
@@ -257,6 +276,7 @@ export function computeDiff(
       rightLines.push({ lineNum: lineNumB++, content: item.itemB || '', type: 'added' });
     }
   }
+
 
   return {
     parts,
