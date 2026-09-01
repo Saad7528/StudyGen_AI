@@ -18,8 +18,11 @@ import {
   AlignLeft, 
   CheckCircle2, 
   AlertCircle,
-  HelpCircle
+  HelpCircle,
+  Columns2,
+  SplitSquareVertical
 } from 'lucide-react';
+
 import { 
   computeDiff, 
   DiffMode, 
@@ -66,14 +69,19 @@ export const TextDiffChecker: React.FC<TextDiffCheckerProps> = ({
     if (initialTextB) setTextB(initialTextB);
   }, [initialTextA, initialTextB]);
 
-  // Diff Options State
-  const [mode, setMode] = useState<DiffMode>('word');
+  // Diff Options State - default mode is 'line'
+  const [mode, setMode] = useState<DiffMode>('line');
   const [viewType, setViewType] = useState<'split' | 'unified'>('split');
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
   const [ignoreCase, setIgnoreCase] = useState(false);
   const [ignoreEmptyLines, setIgnoreEmptyLines] = useState(false);
   const [ignoreLineOrder, setIgnoreLineOrder] = useState(false);
   const [ignorePunctuation, setIgnorePunctuation] = useState(false);
+
+  // Interactive highlight filter toggles
+  const [showRemoved, setShowRemoved] = useState(true);
+  const [showAdded, setShowAdded] = useState(true);
+  const [onlyChanges, setOnlyChanges] = useState(false);
 
   const [copiedStatus, setCopiedStatus] = useState<string | null>(null);
 
@@ -92,6 +100,47 @@ export const TextDiffChecker: React.FC<TextDiffCheckerProps> = ({
 
   const statsA = useMemo(() => calculateTextStatistics(textA), [textA]);
   const statsB = useMemo(() => calculateTextStatistics(textB), [textB]);
+
+  // Paired Split Rows for synchronous line-by-line comparison and filtering
+  const splitRows = useMemo(() => {
+    const rows = [];
+    const len = Math.max(diffResult.leftLines.length, diffResult.rightLines.length);
+    for (let i = 0; i < len; i++) {
+      const left = diffResult.leftLines[i] || { lineNum: 0, content: '', type: 'unchanged' };
+      const right = diffResult.rightLines[i] || { lineNum: 0, content: '', type: 'unchanged' };
+      rows.push({ left, right, rowIndex: i });
+    }
+    return rows;
+  }, [diffResult.leftLines, diffResult.rightLines]);
+
+  const totalChangedLines = useMemo(() => {
+    return splitRows.filter((r) => r.left.type === 'removed' || r.right.type === 'added').length;
+  }, [splitRows]);
+
+  const filteredSplitRows = useMemo(() => {
+    return splitRows.filter((row) => {
+      const isRemoved = row.left.type === 'removed';
+      const isAdded = row.right.type === 'added';
+      const isUnchanged = !isRemoved && !isAdded;
+
+      // 1. If onlyChanges is active, filter out unchanged lines
+      if (onlyChanges && isUnchanged) {
+        return false;
+      }
+
+      // 2. If row is removed but showRemoved is false:
+      if (isRemoved && !showRemoved) {
+        return false;
+      }
+
+      // 3. If row is added but showAdded is false:
+      if (isAdded && !showAdded) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [splitRows, onlyChanges, showRemoved, showAdded]);
 
   // Actions
   const handleSwap = () => {
@@ -166,192 +215,50 @@ ${textB}
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-            <GitCompare className="w-6 h-6 text-white" />
+      <div className="p-5 sm:p-7 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5 sm:gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0 border border-white/20">
+            <Columns2 className="w-6 h-6 text-white" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-                টেক্সট ডিফারেন্স ফাইন্ডার
-              </h2>
-              <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-                Diff Engine
-              </span>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+              টেক্সট ডিফারেন্স ফাইন্ডার
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
               দুটি প্যারাগ্রাফ বা লেখার প্রতিটি অক্ষর, শব্দ ও লাইনের পার্থক্য এবং পরিসংখ্যান বিশ্লেষণ করুন
             </p>
           </div>
         </div>
 
-        {/* Quick Presets */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-slate-400">স্যাম্পল:</span>
-          {SAMPLE_PRESETS.map((preset, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setTextA(preset.textA);
-                setTextB(preset.textB);
-              }}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs font-medium border border-slate-200 dark:border-slate-700 transition"
-            >
-              {preset.name}
-            </button>
-          ))}
+        {/* Quick Presets neatly aligned without scrollbar */}
+        <div className="w-full lg:w-auto flex flex-col sm:flex-row sm:items-center gap-2 p-2 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80">
+          <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 px-2 shrink-0">
+            স্যাম্পল ডেমো:
+          </span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {SAMPLE_PRESETS.map((preset, idx) => {
+              const isCurrent = textA === preset.textA && textB === preset.textB;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setTextA(preset.textA);
+                    setTextB(preset.textB);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                    isCurrent
+                      ? 'bg-indigo-600 text-white shadow-sm font-bold'
+                      : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 border border-slate-200/80 dark:border-slate-700/60'
+                  }`}
+                >
+                  {preset.name}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Control & Options Toolbar */}
-      <div className="p-5 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          {/* Comparison Mode */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1">
-              <Type className="w-3.5 h-3.5" /> তুলনার ধরন:
-            </span>
-            <div className="flex flex-wrap items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-              <button
-                onClick={() => setMode('word')}
-                className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
-                  mode === 'word'
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                শব্দ (Word)
-              </button>
-              <button
-                onClick={() => setMode('char')}
-                className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
-                  mode === 'char'
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                অক্ষর (Char)
-              </button>
-              <button
-                onClick={() => setMode('line')}
-                className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
-                  mode === 'line'
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                লাইন (Line)
-              </button>
-            </div>
-          </div>
-
-          {/* View Mode (Split vs Unified) */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1">
-              <Eye className="w-3.5 h-3.5" /> ভিউ মোড:
-            </span>
-            <div className="flex flex-wrap items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-              <button
-                onClick={() => setViewType('split')}
-                className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
-                  viewType === 'split'
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                পাশাপাশি (Split)
-              </button>
-              <button
-                onClick={() => setViewType('unified')}
-                className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
-                  viewType === 'unified'
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                একত্রে (Inline)
-              </button>
-            </div>
-          </div>
-
-          {/* Top Quick Actions */}
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={handleSwap}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition active:scale-95"
-              title="টেক্সট অদলবদল করুন"
-            >
-              <ArrowLeftRight className="w-3.5 h-3.5" /> অদল-বদল
-            </button>
-            <button
-              onClick={handleClearAll}
-              className="px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold border border-rose-200 dark:border-rose-800/60 flex items-center gap-1.5 transition active:scale-95"
-            >
-              <Trash2 className="w-3.5 h-3.5" /> মুছে ফেলুন
-            </button>
-            <button
-              onClick={handleDownloadReport}
-              className="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-bold border border-indigo-200 dark:border-indigo-800/60 flex items-center gap-1.5 transition active:scale-95"
-            >
-              <Download className="w-3.5 h-3.5" /> রিপোর্ট ডাউনলোড
-            </button>
-          </div>
-        </div>
-
-        {/* Filter Checkboxes */}
-        <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 flex flex-wrap items-center gap-4 text-xs font-medium text-slate-700 dark:text-slate-300">
-          <label className="flex items-center gap-2 cursor-pointer select-none hover:text-indigo-600 dark:hover:text-indigo-400">
-            <input
-              type="checkbox"
-              checked={ignoreEmptyLines}
-              onChange={(e) => setIgnoreEmptyLines(e.target.checked)}
-              className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
-            />
-            <span>গ্যাপ লাইন বাদ দিন (Ignore Empty Lines)</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer select-none hover:text-indigo-600 dark:hover:text-indigo-400">
-            <input
-              type="checkbox"
-              checked={ignoreLineOrder}
-              onChange={(e) => setIgnoreLineOrder(e.target.checked)}
-              className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
-            />
-            <span>লাইনের ক্রম উল্টাপাল্টা হলেও চেক করুন (Ignore Order)</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer select-none hover:text-indigo-600 dark:hover:text-indigo-400">
-            <input
-              type="checkbox"
-              checked={ignoreWhitespace}
-              onChange={(e) => setIgnoreWhitespace(e.target.checked)}
-              className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
-            />
-            <span>হোয়াইটস্পেস ইগনোর (Ignore Spaces)</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer select-none hover:text-indigo-600 dark:hover:text-indigo-400">
-            <input
-              type="checkbox"
-              checked={ignoreCase}
-              onChange={(e) => setIgnoreCase(e.target.checked)}
-              className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
-            />
-            <span>কেস ইগনোর (Ignore Case)</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer select-none hover:text-indigo-600 dark:hover:text-indigo-400">
-            <input
-              type="checkbox"
-              checked={ignorePunctuation}
-              onChange={(e) => setIgnorePunctuation(e.target.checked)}
-              className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
-            />
-            <span>বিরামচিহ্ন বাদ (Ignore Punctuation)</span>
-          </label>
-        </div>
-      </div>
 
       {/* Two Text Inputs Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -552,53 +459,328 @@ ${textB}
         </div>
       </div>
 
-      {/* Difference Output Viewer */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
-          <div className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-indigo-500" />
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              পার্থক্য ও হাইলাইটেড ফলাফল ({viewType === 'split' ? 'Side-by-Side Split View' : 'Unified Inline View'})
-            </h3>
-          </div>
-          <div className="flex items-center gap-3 text-xs font-medium">
-            <div className="flex items-center gap-1">
-              <span className="w-3 h-3 rounded bg-rose-500/20 border border-rose-500/40 inline-block" />
-              <span className="text-rose-600 dark:text-rose-400">বাদ পড়া অংশ</span>
+      {/* Difference Output Viewer & Contextual Controls */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
+        {/* Top Header of Diff Output Viewer with Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+              <FileText className="w-5 h-5" />
             </div>
-            <div className="flex items-center gap-1">
-              <span className="w-3 h-3 rounded bg-emerald-500/20 border border-emerald-500/40 inline-block" />
-              <span className="text-emerald-600 dark:text-emerald-400">নতুন যোগ হওয়া অংশ</span>
+            <div>
+              <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                পার্থক্য ও হাইলাইটেড ফলাফল
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {viewType === 'split' ? 'পাশাপাশি তুলনা (Side-by-Side Split View)' : 'একত্রে লাইন তুলনা (Unified Inline View)'}
+              </p>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleSwap}
+              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition active:scale-95"
+              title="উভয় টেক্সট অদলবদল করুন"
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5" /> অদল-বদল
+            </button>
+            <button
+              onClick={handleClearAll}
+              className="px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold border border-rose-200 dark:border-rose-800/60 flex items-center gap-1.5 transition active:scale-95"
+              title="সব টেক্সট মুছে ফেলুন"
+            >
+              <Trash2 className="w-3.5 h-3.5" /> মুছে ফেলুন
+            </button>
+            <button
+              onClick={handleDownloadReport}
+              className="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-bold border border-indigo-200 dark:border-indigo-800/60 flex items-center gap-1.5 transition active:scale-95"
+              title="বিশ্লেষণ রিপোর্ট ডাউনলোড করুন"
+            >
+              <Download className="w-3.5 h-3.5" /> রিপোর্ট ডাউনলোড
+            </button>
+          </div>
+        </div>
+
+        {/* Primary View & Comparison Mode Controls Toolbar */}
+        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800/80 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* 1. Comparison Mode */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                <Type className="w-3.5 h-3.5 text-indigo-500" /> তুলনার ধরন:
+              </span>
+              <div className="flex flex-wrap items-center p-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <button
+                  onClick={() => setMode('line')}
+                  className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
+                    mode === 'line'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  লাইন (Line)
+                </button>
+                <button
+                  onClick={() => setMode('word')}
+                  className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
+                    mode === 'word'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  শব্দ (Word)
+                </button>
+                <button
+                  onClick={() => setMode('char')}
+                  className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
+                    mode === 'char'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  অক্ষর (Char)
+                </button>
+              </div>
+            </div>
+
+            {/* 2. View Mode (Split vs Unified) */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                <Eye className="w-3.5 h-3.5 text-indigo-500" /> ভিউ মোড:
+              </span>
+              <div className="flex flex-wrap items-center p-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <button
+                  onClick={() => setViewType('split')}
+                  className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
+                    viewType === 'split'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  পাশাপাশি (Split)
+                </button>
+                <button
+                  onClick={() => setViewType('unified')}
+                  className={`px-2.5 sm:px-3 py-1 text-xs font-bold rounded-lg transition ${
+                    viewType === 'unified'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  একত্রে (Inline)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Interactive Toggle Filters for Removed, Added & Only Changes */}
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-2.5 text-xs font-semibold select-none">
+            <span className="text-slate-500 dark:text-slate-400 text-[11px] font-bold">
+              পরিবর্তন ফিল্টার:
+            </span>
+
+            {/* Toggle Removed (বাদ পড়া অংশ) */}
+            <label
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border cursor-pointer transition-all duration-200 ${
+                showRemoved
+                  ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800/80 text-rose-700 dark:text-rose-300 shadow-sm font-bold'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 opacity-60 hover:opacity-100'
+              }`}
+              title="বাদ পড়া (ডিলিট হওয়া) অংশ দেখাতে বা লুকাতে ক্লিক করুন"
+            >
+              <input
+                type="checkbox"
+                checked={showRemoved}
+                onChange={(e) => setShowRemoved(e.target.checked)}
+                className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-rose-300 dark:border-rose-700 cursor-pointer accent-rose-600"
+              />
+              <span className="font-bold">বাদ পড়া অংশ</span>
+              <span className="px-1.5 py-0.2 rounded-md bg-rose-500/20 text-rose-700 dark:text-rose-300 text-[10px] font-extrabold">
+                -{diffResult.summary.removedCount}
+              </span>
+            </label>
+
+            {/* Toggle Added (নতুন যোগ হওয়া অংশ) */}
+            <label
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border cursor-pointer transition-all duration-200 ${
+                showAdded
+                  ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 shadow-sm font-bold'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 opacity-60 hover:opacity-100'
+              }`}
+              title="নতুন যোগ হওয়া অংশ দেখাতে বা লুকাতে ক্লিক করুন"
+            >
+              <input
+                type="checkbox"
+                checked={showAdded}
+                onChange={(e) => setShowAdded(e.target.checked)}
+                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-emerald-300 dark:border-emerald-700 cursor-pointer accent-emerald-600"
+              />
+              <span className="font-bold">নতুন যোগ হওয়া অংশ</span>
+              <span className="px-1.5 py-0.2 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold">
+                +{diffResult.summary.addedCount}
+              </span>
+            </label>
+
+            {/* Toggle Only Changes (শুধুমাত্র অমিল লাইন) */}
+            <label
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border cursor-pointer transition-all duration-200 ${
+                onlyChanges
+                  ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 shadow-sm font-bold'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 opacity-60 hover:opacity-100'
+              }`}
+              title="একই রকম থাকা লাইনগুলো লুকিয়ে শুধুমাত্র পরিবর্তন হওয়া লাইনগুলো দেখতে ক্লিক করুন"
+            >
+              <input
+                type="checkbox"
+                checked={onlyChanges}
+                onChange={(e) => setOnlyChanges(e.target.checked)}
+                className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-indigo-300 dark:border-indigo-700 cursor-pointer accent-indigo-600"
+              />
+              <span className="font-bold">শুধুমাত্র অমিল লাইন</span>
+              <span className="px-1.5 py-0.2 rounded-md bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold">
+                {totalChangedLines} লাইন
+              </span>
+            </label>
+          </div>
+
+          {/* 4. Advanced Filters & Normalization Options Grid */}
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <Sliders className="w-3.5 h-3.5 text-indigo-500" /> অ্যাডভান্সড রুলস ও নরম্যালাইজেশন:
+              </span>
+              <span className="text-[11px] text-slate-400 hidden sm:inline">
+                ক্লিক করে রুলস সক্রিয় বা নিষ্ক্রিয় করুন
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5">
+              {/* 1. Ignore Empty Lines */}
+              <label
+                className={`flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer select-none text-xs font-semibold transition-all ${
+                  ignoreEmptyLines
+                    ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm font-bold'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={ignoreEmptyLines}
+                  onChange={(e) => setIgnoreEmptyLines(e.target.checked)}
+                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-700 cursor-pointer accent-indigo-600"
+                />
+                <span className="truncate">গ্যাপ লাইন বাদ দিন (Blank)</span>
+              </label>
+
+              {/* 2. Ignore Line Order */}
+              <label
+                className={`flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer select-none text-xs font-semibold transition-all ${
+                  ignoreLineOrder
+                    ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm font-bold'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={ignoreLineOrder}
+                  onChange={(e) => setIgnoreLineOrder(e.target.checked)}
+                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-700 cursor-pointer accent-indigo-600"
+                />
+                <span className="truncate">ক্রম উল্টাপাল্টা হলেও চেক (Order)</span>
+              </label>
+
+              {/* 3. Ignore Whitespace */}
+              <label
+                className={`flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer select-none text-xs font-semibold transition-all ${
+                  ignoreWhitespace
+                    ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm font-bold'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={ignoreWhitespace}
+                  onChange={(e) => setIgnoreWhitespace(e.target.checked)}
+                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-700 cursor-pointer accent-indigo-600"
+                />
+                <span className="truncate">হোয়াইটস্পেস ইগনোর (Spaces)</span>
+              </label>
+
+              {/* 4. Ignore Case */}
+              <label
+                className={`flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer select-none text-xs font-semibold transition-all ${
+                  ignoreCase
+                    ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm font-bold'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={ignoreCase}
+                  onChange={(e) => setIgnoreCase(e.target.checked)}
+                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-700 cursor-pointer accent-indigo-600"
+                />
+                <span className="truncate">কেস ইগনোর (Case)</span>
+              </label>
+
+              {/* 5. Ignore Punctuation */}
+              <label
+                className={`flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer select-none text-xs font-semibold transition-all ${
+                  ignorePunctuation
+                    ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm font-bold'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={ignorePunctuation}
+                  onChange={(e) => setIgnorePunctuation(e.target.checked)}
+                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-700 cursor-pointer accent-indigo-600"
+                />
+                <span className="truncate">বিরামচিহ্ন বাদ (Punctuation)</span>
+              </label>
             </div>
           </div>
         </div>
+
 
         {/* View Mode 1: Unified Inline */}
         {viewType === 'unified' ? (
           <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm font-sans leading-relaxed min-h-[160px] whitespace-pre-wrap selection:bg-indigo-500 selection:text-white">
             {diffResult.parts.length === 0 ? (
               <span className="text-slate-400 italic">কোনো পার্থক্য নেই বা কোনো টেক্সট ইনপুট দেওয়া হয়নি।</span>
+            ) : !showRemoved && !showAdded ? (
+              <div className="text-center py-8 text-slate-400 text-xs italic">
+                উভয় পরিবর্তনের ফিল্টার বন্ধ রয়েছে। পরিবর্তন দেখতে উপরের <strong>&quot;বাদ পড়া অংশ&quot;</strong> বা <strong>&quot;নতুন যোগ হওয়া অংশ&quot;</strong> চেকবক্স অন করুন।
+              </div>
             ) : (
               diffResult.parts.map((part, index) => {
                 if (part.type === 'added') {
+                  if (!showAdded) return null;
                   return (
                     <ins
                       key={index}
-                      className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-1 py-0.5 rounded border border-emerald-500/30 no-underline font-semibold mx-0.5"
+                      className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-1 py-0.5 rounded border border-emerald-500/30 no-underline font-semibold mx-0.5 animate-fade-in"
                     >
                       {part.value}
                     </ins>
                   );
                 }
                 if (part.type === 'removed') {
+                  if (!showRemoved) return null;
                   return (
                     <del
                       key={index}
-                      className="bg-rose-500/20 text-rose-700 dark:text-rose-300 px-1 py-0.5 rounded border border-rose-500/30 line-through font-semibold mx-0.5 opacity-80"
+                      className="bg-rose-500/20 text-rose-700 dark:text-rose-300 px-1 py-0.5 rounded border border-rose-500/30 line-through font-semibold mx-0.5 opacity-80 animate-fade-in"
                     >
                       {part.value}
                     </del>
                   );
+                }
+                if (onlyChanges) {
+                  return null; // When only changes is on, suppress unchanged text spans in unified view
                 }
                 return (
                   <span key={index} className="text-slate-800 dark:text-slate-200">
@@ -609,64 +791,96 @@ ${textB}
             )}
           </div>
         ) : (
-          /* View Mode 2: Split View (Side-by-Side Line by Line) */
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left Column View */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-slate-50 dark:bg-slate-950">
-              <div className="px-4 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center justify-between">
-                <span>মূল টেক্সট (Original Side)</span>
-                <span>{diffResult.leftLines.length} লাইন</span>
-              </div>
-              <div className="p-3 font-mono text-xs overflow-x-auto space-y-1 min-h-[200px]">
-                {diffResult.leftLines.map((line, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex items-start gap-2 px-2 py-1 rounded transition-colors ${
-                      line.type === 'removed'
-                        ? 'bg-rose-500/15 text-rose-800 dark:text-rose-200 border-l-2 border-rose-500'
-                        : 'text-slate-700 dark:text-slate-300'
-                    }`}
-                  >
-                    <span className="text-[10px] text-slate-400 select-none w-6 text-right shrink-0">
-                      {line.lineNum > 0 ? line.lineNum : ''}
-                    </span>
-                    <span className="flex-1 font-sans break-words whitespace-pre-wrap">
-                      {line.content || ' '}
-                    </span>
-                  </div>
-                ))}
-              </div>
+          /* View Mode 2: Split View (Side-by-Side Line by Line with Paired Row Filtering) */
+          filteredSplitRows.length === 0 ? (
+            <div className="text-center py-12 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+              <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                {onlyChanges
+                  ? 'ফিল্টার অনুযায়ী কোনো অমিল লাইন পাওয়া যায়নি অথবা সব লাইন একই রকম।'
+                  : 'কোনো লাইন প্রদর্শনের জন্য পাওয়া যায়নি।'}
+              </p>
+              <p className="text-xs text-slate-400">
+                সব লাইন দেখতে উপরের <strong>&quot;শুধুমাত্র অমিল লাইন&quot;</strong> বা <strong>&quot;বাদ পড়া / নতুন যোগ হওয়া অংশ&quot;</strong> চেকবক্স অন করুন।
+              </p>
             </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Left Column View */}
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-slate-50 dark:bg-slate-950">
+                <div className="px-4 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center justify-between">
+                  <span>মূল টেক্সট (Original Side)</span>
+                  <span>
+                    {filteredSplitRows.length} লাইন {onlyChanges ? `(মোট ${splitRows.length})` : ''}
+                  </span>
+                </div>
+                <div className="p-3 font-mono text-xs overflow-x-auto space-y-1 min-h-[200px]">
+                  {filteredSplitRows.map((row, idx) => {
+                    const line = row.left;
+                    const isHighlighted = showRemoved && line.type === 'removed';
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex items-start gap-2 px-2 py-1 rounded transition-colors ${
+                          isHighlighted
+                            ? 'bg-rose-500/15 text-rose-800 dark:text-rose-200 border-l-2 border-rose-500 font-semibold'
+                            : line.lineNum > 0
+                            ? 'text-slate-700 dark:text-slate-300'
+                            : 'opacity-40 text-slate-400'
+                        }`}
+                      >
+                        <span className="text-[10px] text-slate-400 select-none w-7 text-right shrink-0 font-mono">
+                          {line.lineNum > 0 ? line.lineNum : '-'}
+                        </span>
+                        <span className="flex-1 font-sans break-words whitespace-pre-wrap">
+                          {line.content || (line.lineNum === 0 ? '—' : ' ')}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
 
-            {/* Right Column View */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-slate-50 dark:bg-slate-950">
-              <div className="px-4 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
-                <span>পরিবর্তিত টেক্সট (Modified Side)</span>
-                <span>{diffResult.rightLines.length} লাইন</span>
-              </div>
-              <div className="p-3 font-mono text-xs overflow-x-auto space-y-1 min-h-[200px]">
-                {diffResult.rightLines.map((line, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex items-start gap-2 px-2 py-1 rounded transition-colors ${
-                      line.type === 'added'
-                        ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200 border-l-2 border-emerald-500'
-                        : 'text-slate-700 dark:text-slate-300'
-                    }`}
-                  >
-                    <span className="text-[10px] text-slate-400 select-none w-6 text-right shrink-0">
-                      {line.lineNum > 0 ? line.lineNum : ''}
-                    </span>
-                    <span className="flex-1 font-sans break-words whitespace-pre-wrap">
-                      {line.content || ' '}
-                    </span>
-                  </div>
-                ))}
+              {/* Right Column View */}
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-slate-50 dark:bg-slate-950">
+                <div className="px-4 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
+                  <span>পরিবর্তিত টেক্সট (Modified Side)</span>
+                  <span>
+                    {filteredSplitRows.length} লাইন {onlyChanges ? `(মোট ${splitRows.length})` : ''}
+                  </span>
+                </div>
+                <div className="p-3 font-mono text-xs overflow-x-auto space-y-1 min-h-[200px]">
+                  {filteredSplitRows.map((row, idx) => {
+                    const line = row.right;
+                    const isHighlighted = showAdded && line.type === 'added';
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex items-start gap-2 px-2 py-1 rounded transition-colors ${
+                          isHighlighted
+                            ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200 border-l-2 border-emerald-500 font-semibold'
+                            : line.lineNum > 0
+                            ? 'text-slate-700 dark:text-slate-300'
+                            : 'opacity-40 text-slate-400'
+                        }`}
+                      >
+                        <span className="text-[10px] text-slate-400 select-none w-7 text-right shrink-0 font-mono">
+                          {line.lineNum > 0 ? line.lineNum : '-'}
+                        </span>
+                        <span className="flex-1 font-sans break-words whitespace-pre-wrap">
+                          {line.content || (line.lineNum === 0 ? '—' : ' ')}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
+          )
         )}
       </div>
+
+
 
       {/* Comprehensive Side-by-Side Statistics Comparison Table */}
       <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
