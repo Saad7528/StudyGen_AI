@@ -66,9 +66,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
 
   // Math & Study Tool sub-items
   const studyItems = [
-    { id: 'omr-generator', label: 'OMR শিট জেনারেটর', icon: Layers, desc: 'প্রিন্ট-রেডি বাবল শিট মেকার', badge: 'New' },
-    { id: 'study-summary', label: 'AI স্টাডি শিট ও সামারি', icon: BookOpen, desc: 'চ্যাপ্টার সামারি ও বুলেট পয়েন্ট', badge: 'AI' },
-    { id: 'quiz-practice', label: 'কুইজ ও ফ্ল্যাশকার্ড', icon: Sparkles, desc: 'টাইমড কুইজ ও ৩D ফ্ল্যাশকার্ড', badge: 'Pro' },
+    { id: 'quiz-practice', label: 'কুইজ ও ফ্ল্যাশকার্ড', icon: Sparkles, desc: '১০০+ প্রশ্ন ও ৩D ফ্ল্যাশকার্ড', badge: '১০০+' },
+    { id: 'grammar-checker', label: 'ব্যাকরণ ও বানান', icon: SpellCheck, desc: 'AI ব্যাকরণ শুদ্ধিকরণ', badge: 'AI' },
+    { id: 'quick-ocr', label: 'কুইক OCR', icon: Sparkles, desc: 'ছবি থেকে টেক্সট রূপান্তর' },
     { id: 'math-solver', label: 'সমীকরণ সমাধানকারী', icon: Calculator, desc: 'স্টেপ-বাই-স্টেপ বীজগণিত ও সমীকরণ' },
     { id: 'gpa-calculator', label: 'GPA ক্যালকুলেটর', icon: Award, desc: 'এসএসসি ও এইচএসসি গ্রেডিং' },
     { id: 'base-converter', label: 'বেস কনভার্টার', icon: Binary, desc: 'বাইনারি, ডেসিমেল, হেক্সাডেসিমেল' },
@@ -118,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             </div>
           </div>
 
-          {/* Desktop Navigation Tabs (Clean 6 Items) */}
+          {/* Desktop Navigation Tabs (Clean Primary Navbar) */}
           <nav className="hidden lg:flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-inner">
             {/* 1. Question Paper */}
             <button
@@ -165,28 +165,27 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
               </span>
             </button>
 
-            {/* 4. Quiz & Flashcards */}
+            {/* 4. Text Difference Finder */}
             <button
-              onClick={() => handleSelectTab('quiz-practice')}
+              onClick={() => handleSelectTab('text-diff')}
               className={`px-3.5 py-2 text-xs font-semibold rounded-xl transition-all flex items-center gap-1.5 ${
-                activeTab === 'quiz-practice'
+                activeTab === 'text-diff'
                   ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow-md shadow-indigo-500/10 font-bold'
                   : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800/50'
               }`}
             >
-              <span>কুইজ ও ফ্ল্যাশকার্ড</span>
-              <span className="text-[9px] font-bold uppercase px-1.5 py-0.2 rounded-md bg-emerald-500 text-white">
-                ১০০+
+              <span>টেক্সট ডিফারেন্স</span>
+              <span className="text-[9px] font-bold uppercase px-1.5 py-0.2 rounded-md bg-indigo-500 text-white">
+                Diff
               </span>
             </button>
-
 
             {/* 5. More Academy & Math Tools Dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsMathDropdownOpen(!isMathDropdownOpen)}
                 className={`px-3.5 py-2 text-xs font-semibold rounded-xl transition-all flex items-center gap-1.5 ${
-                  isStudyActive && activeTab !== 'omr-generator' && activeTab !== 'study-summary' && activeTab !== 'quiz-practice'
+                  isStudyActive
                     ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow-md shadow-indigo-500/10 font-bold'
                     : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800/50'
                 }`}
@@ -199,14 +198,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
               {isMathDropdownOpen && (
                 <div className="absolute top-full right-0 mt-2 w-64 p-2 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-2xl space-y-1 animate-fade-in z-50">
                   <div className="px-2.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    ল্যাঙ্গুয়েজ ও গণিত টুলকিট
+                    অন্যান্য স্টাডি ও গণিত টুলকিট
                   </div>
-                  {[
-                    { id: 'text-diff', label: 'টেক্সট ডিফারেন্স', icon: GitCompare, desc: 'পরিবর্তন ও ডিফারেন্স ফাইন্ডার' },
-                    { id: 'grammar-checker', label: 'ব্যাকরণ ও বানান', icon: SpellCheck, desc: 'AI ব্যাকরণ শুদ্ধিকরণ' },
-                    { id: 'quick-ocr', label: 'কুইক OCR', icon: Sparkles, desc: 'ছবি থেকে টেক্সট রূপান্তর' },
-                    ...studyItems.slice(3)
-                  ].map((subItem) => {
+                  {studyItems.map((subItem) => {
                     const SubIcon = subItem.icon;
                     const isSubActive = activeTab === subItem.id;
                     return (
@@ -223,7 +217,14 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                           <SubIcon className="w-3.5 h-3.5" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="text-xs truncate">{subItem.label}</div>
+                          <div className="text-xs truncate flex items-center gap-1.5">
+                            <span>{subItem.label}</span>
+                            {subItem.badge && (
+                              <span className="text-[8px] font-bold px-1 rounded bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                                {subItem.badge}
+                              </span>
+                            )}
+                          </div>
                           <div className="text-[10px] text-slate-400 font-normal truncate">{subItem.desc}</div>
                         </div>
                       </button>
@@ -245,6 +246,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
               <span>পরিচিতি</span>
             </button>
           </nav>
+
 
 
           {/* Right Controls: Theme Toggle + Mobile Menu Trigger */}
