@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
+
 import { Footer } from '../components/Footer';
 import { PhotoUploader } from '../components/question-paper/PhotoUploader';
 import { PaperHeaderEditor } from '../components/question-paper/PaperHeaderEditor';
@@ -38,8 +39,23 @@ import {
   ChevronRight
 } from 'lucide-react';
 
+const VALID_TABS = [
+  'question-paper',
+  'omr-generator',
+  'study-summary',
+  'text-diff',
+  'quiz-practice',
+  'grammar-checker',
+  'quick-ocr',
+  'math-solver',
+  'gpa-calculator',
+  'base-converter',
+  'formula-library',
+  'about'
+];
+
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState('question-paper');
+  const [activeTab, setActiveTabState] = useState<string>('question-paper');
   const [paperViewMode, setPaperViewMode] = useState<'edit' | 'preview'>('preview');
   const [paperData, setPaperData] = useState<QuestionPaperData>(SAMPLE_EXAM_PAPERS[0].data);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -49,6 +65,69 @@ export default function HomePage() {
   const [diffTextA, setDiffTextA] = useState('');
   const [diffTextB, setDiffTextB] = useState('');
   const [grammarText, setGrammarText] = useState('');
+
+  // 1. Initialize active tab from URL query params, hash or localStorage on mount
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      const hashParam = window.location.hash.replace('#', '');
+      const savedTab = localStorage.getItem('studygen_active_tab');
+
+      const targetTab = (tabParam && VALID_TABS.includes(tabParam))
+        ? tabParam
+        : (hashParam && VALID_TABS.includes(hashParam))
+        ? hashParam
+        : (savedTab && VALID_TABS.includes(savedTab))
+        ? savedTab
+        : 'question-paper';
+
+      setActiveTabState(targetTab);
+
+      // Keep URL search param synced
+      const currentUrl = new URL(window.location.href);
+      if (currentUrl.searchParams.get('tab') !== targetTab) {
+        currentUrl.searchParams.set('tab', targetTab);
+        window.history.replaceState({ tab: targetTab }, '', currentUrl.toString());
+      }
+    } catch {
+      // Fallback safe for SSR/Edge
+    }
+  }, []);
+
+  // 2. Handle browser Back/Forward navigation (popstate)
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const tabParam = params.get('tab');
+        if (tabParam && VALID_TABS.includes(tabParam)) {
+          setActiveTabState(tabParam);
+        } else if (event.state?.tab && VALID_TABS.includes(event.state.tab)) {
+          setActiveTabState(event.state.tab);
+        }
+      } catch {
+        // Fallback
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // 3. Tab switch handler with URL & storage synchronization
+  const setActiveTab = (tab: string) => {
+    setActiveTabState(tab);
+    try {
+      localStorage.setItem('studygen_active_tab', tab);
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', tab);
+      window.history.pushState({ tab }, '', url.toString());
+    } catch {
+      // Safe fallback
+    }
+  };
+
 
   const handleSendToGrammarChecker = (text: string) => {
     setGrammarText(text);
