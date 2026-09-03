@@ -1,10 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { FlashcardItem, QuizQuestion, QuizDeck } from '../../types/study-tools';
+import { FlashcardItem, QuizQuestion as LegacyQuizQuestion, QuizDeck } from '../../types/study-tools';
+import { QuizQuestion, GameSettings, GameResult } from '../../types/quiz';
 import { QuestionPaperData } from '../../types/question-paper';
 import { KaTeXViewer } from '../KaTeXViewer';
 import { FULL_DECK_COLLECTION } from '../../lib/quiz-flashcard-data';
+import { UniversalQuizInputModal } from './quiz/UniversalQuizInputModal';
+import { GamifiedPlayArena } from './quiz/GamifiedPlayArena';
+import { QuizVictoryReport } from './quiz/QuizVictoryReport';
+import { InteractiveLaunchpadSection } from './quiz/InteractiveLaunchpadSection';
+import { CommunityQuizHub } from './quiz/CommunityQuizHub';
+import { SaveQuizModal } from './quiz/SaveQuizModal';
+
 import { 
   Sparkles, 
   BrainCircuit, 
@@ -24,7 +32,19 @@ import {
   Play,
   Bookmark,
   SlidersHorizontal,
-  Moon
+  Moon,
+  Plus,
+  Zap,
+  Gamepad2,
+  BookOpen,
+  Camera,
+  Upload,
+  FileText,
+  Heart,
+  ArrowRight,
+  Globe,
+  Share2,
+  Users
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -33,9 +53,28 @@ interface QuizFlashcardPracticeProps {
 }
 
 export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ paperData }) => {
-  const [activeMode, setActiveMode] = useState<'flashcards' | 'quiz'>('flashcards');
+  const [activeMode, setActiveMode] = useState<'arena' | 'community' | 'flashcards'>('arena');
   const [selectedDeckId, setSelectedDeckId] = useState('islamic');
   const [decks, setDecks] = useState<QuizDeck[]>(FULL_DECK_COLLECTION);
+
+  // Modal State for Universal AI Input & Community Save
+  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
+  const [initialModalTab, setInitialModalTab] = useState<'paste' | 'image' | 'file'>('paste');
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
+  // Active Gamified Play Arena States
+  const [isPlayingArena, setIsPlayingArena] = useState(false);
+  const [arenaQuestions, setArenaQuestions] = useState<QuizQuestion[]>([]);
+  const [gameResult, setGameResult] = useState<GameResult | null>(null);
+  const [userGameAnswers, setUserGameAnswers] = useState<(number | null)[]>([]);
+
+  // Game Arena Custom Settings
+  const [gameSettings, setGameSettings] = useState<GameSettings>({
+    questionCount: 10,
+    timePerQuestion: 25,
+    lifelinesEnabled: true,
+    soundEnabled: true
+  });
 
   // Flashcard states
   const [cardIndex, setCardIndex] = useState(0);
@@ -44,20 +83,10 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
   const [masteredCards, setMasteredCards] = useState<Set<string>>(new Set());
   const [jumpInput, setJumpInput] = useState('');
 
-  // Quiz states
-  const [quizQuestionLimit, setQuizQuestionLimit] = useState<number>(25);
-  const [quizIndex, setQuizIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [seconds, setSeconds] = useState(0);
-  const [timerActive, setTimerActive] = useState(false);
-
   // Sync MCQs from current Question Paper into a custom deck if available
   useEffect(() => {
     if (paperData && paperData.sections) {
-      const paperMCQs: QuizQuestion[] = [];
+      const paperMCQs: LegacyQuizQuestion[] = [];
       const paperFlashcards: FlashcardItem[] = [];
 
       paperData.sections.forEach((sec) => {
@@ -104,12 +133,66 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
   }, [paperData]);
 
   const currentDeck = decks.find((d) => d.id === selectedDeckId) || decks[0];
-  const activeQuizQuestions = currentDeck.quizQuestions.slice(
-    0,
-    Math.min(quizQuestionLimit, currentDeck.quizQuestions.length)
-  );
 
-  // Shuffle flashcard deck
+  // Convert Deck Questions to Gamified Arena Format
+  const convertDeckToQuizQuestions = (deck: QuizDeck): QuizQuestion[] => {
+    return deck.quizQuestions.map((q, idx) => ({
+      id: q.id || `q-${idx}`,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctIndex,
+      explanation: `সঠিক উত্তর হলো: "${q.options[q.correctIndex]}".`,
+      category: q.category || deck.title,
+      difficulty: 'medium'
+    }));
+  };
+
+  // Start Arena Game from Current Deck
+  const handleStartArenaFromDeck = () => {
+    const converted = convertDeckToQuizQuestions(currentDeck);
+    const selected = converted.slice(0, gameSettings.questionCount);
+    setArenaQuestions(selected);
+    setGameResult(null);
+    setUserGameAnswers([]);
+    setIsPlayingArena(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Handle Quiz Generated from AI (Photo / File / Text)
+  const handleCustomQuizGenerated = (questions: QuizQuestion[]) => {
+    setArenaQuestions(questions);
+    setGameResult(null);
+    setUserGameAnswers([]);
+    setIsPlayingArena(true);
+    setActiveMode('arena');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Game Arena Handlers
+  const handleGameFinished = (result: GameResult, answers: (number | null)[]) => {
+    setGameResult(result);
+    setUserGameAnswers(answers);
+    setIsPlayingArena(false);
+  };
+
+  const handlePlayAgainAll = () => {
+    setGameResult(null);
+    setUserGameAnswers([]);
+    setIsPlayingArena(true);
+  };
+
+  const handlePlayAgainWrongOnly = () => {
+    if (!gameResult) return;
+    const failedQuestions = gameResult.wrongQuestionIndices.map(idx => arenaQuestions[idx]).filter(Boolean);
+    if (failedQuestions.length > 0) {
+      setArenaQuestions(failedQuestions);
+      setGameResult(null);
+      setUserGameAnswers([]);
+      setIsPlayingArena(true);
+    }
+  };
+
+  // Flashcard Actions
   const handleShuffleDeck = () => {
     setDecks((prev) =>
       prev.map((d) => {
@@ -125,29 +208,6 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
     setShowHint(false);
     confetti({ particleCount: 30, spread: 50 });
   };
-
-  const handleJumpToCard = (e: React.FormEvent) => {
-    e.preventDefault();
-    const num = parseInt(jumpInput, 10);
-    if (!isNaN(num) && num >= 1 && num <= currentDeck.cards.length) {
-      setCardIndex(num - 1);
-      setIsFlipped(false);
-      setShowHint(false);
-      setJumpInput('');
-    }
-  };
-
-  // Timer logic for Quiz
-  useEffect(() => {
-
-    let interval: any = null;
-    if (timerActive && !quizCompleted) {
-      interval = setInterval(() => {
-        setSeconds((prev) => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timerActive, quizCompleted]);
 
   const handleNextCard = () => {
     setIsFlipped(false);
@@ -174,45 +234,10 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
     });
   };
 
-  // Quiz Handlers
-  const handleSelectQuizOption = (optIdx: number) => {
-    if (isAnswerSubmitted) return;
-    setSelectedOption(optIdx);
-    setIsAnswerSubmitted(true);
-
-    const isCorrect = optIdx === currentDeck.quizQuestions[quizIndex].correctIndex;
-    if (isCorrect) {
-      setScore((prev) => prev + 1);
-      confetti({ particleCount: 40, spread: 60 });
-    }
-  };
-
-  const handleNextQuizQuestion = () => {
-    if (quizIndex < currentDeck.quizQuestions.length - 1) {
-      setQuizIndex((prev) => prev + 1);
-      setSelectedOption(null);
-      setIsAnswerSubmitted(false);
-    } else {
-      setQuizCompleted(true);
-      setTimerActive(false);
-      confetti({ particleCount: 120, spread: 80 });
-    }
-  };
-
-  const handleRestartQuiz = () => {
-    setQuizIndex(0);
-    setSelectedOption(null);
-    setIsAnswerSubmitted(false);
-    setScore(0);
-    setQuizCompleted(false);
-    setSeconds(0);
-    setTimerActive(true);
-  };
-
   // Keyboard navigation for Flashcards
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (activeMode !== 'flashcards') return;
+      if (activeMode !== 'flashcards' || isPlayingArena) return;
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
       if (e.code === 'Space' || e.code === 'Enter') {
@@ -229,422 +254,401 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeMode, currentDeck.cards.length]);
+  }, [activeMode, isPlayingArena, currentDeck.cards.length]);
 
   const currentCard = currentDeck.cards[cardIndex];
-  const currentQuizQ = activeQuizQuestions[quizIndex];
-
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Top Banner */}
+    <div className="space-y-8 animate-fade-in pb-16">
+      
+      {/* Header Banner & Mode Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-emerald-500 p-0.5 shadow-md">
-            <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
-              <BrainCircuit className="w-6 h-6 text-amber-500" />
-            </div>
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+            <Gamepad2 className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-              Interactive Flashcards & Timed Quiz Practice
-              <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
-                ১০০+ প্রশ্নভাণ্ডার
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                🎮 ক্রিয়েট ইউর MCQ গেম (Create Your Own Game)
+              </h2>
+              <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-600 border border-pink-500/20">
+                Gamified AI
               </span>
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              ইসলামিক জ্ঞান, বিজ্ঞান, ম্যাথ ও আইসিটির সমৃদ্ধ প্রশ্নভাণ্ডার থেকে সক্রিয় পুনরাবৃত্তি ও লাইভ MCQ কুইজ।
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              ছবি, ডকুমেন্ট (PDF/DOCX) বা টেক্সট আপলোড করে নিজস্ব কোশ্চেন অ্যান্ড অ্যানসার কুইজ গেম বানান ও খেলুন
             </p>
           </div>
         </div>
 
-        {/* Mode Switcher */}
-        <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+        {/* Action Controls & Universal Modal Trigger */}
+        <div className="flex items-center gap-2.5 flex-wrap">
           <button
-            type="button"
-            onClick={() => setActiveMode('flashcards')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
-              activeMode === 'flashcards'
-                ? 'bg-amber-500 text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-300 hover:text-amber-500'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" /> ফ্ল্যাশকার্ড ডেক ({currentDeck.cards.length})
-          </button>
-          <button
-            type="button"
             onClick={() => {
-              setActiveMode('quiz');
-              setTimerActive(true);
+              setInitialModalTab('paste');
+              setIsInputModalOpen(true);
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
-              activeMode === 'quiz'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600'
-            }`}
+            className="px-4 py-2 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-lg shadow-indigo-600/25 flex items-center gap-2 transition cursor-pointer"
           >
-            <Timer className="w-3.5 h-3.5" /> লাইভ MCQ কুইজ ({activeQuizQuestions.length})
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>+ নতুন AI গেম তৈরি করুন</span>
           </button>
-        </div>
-      </div>
 
-      {/* Deck Selector Pills */}
-      <div className="p-4 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-md space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-            বিষয়ভিত্তিক ডেক নির্বাচন করুন:
-          </span>
-          <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
-            মোট ৪টি পূর্ণাঙ্গ ডেক (প্রতিটিতে ১০০টি কার্ড ও কুইজ)
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          {decks.map((deck) => (
+          {/* Mode Switcher: Arena, Community, Flashcards */}
+          <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             <button
-              key={deck.id}
-              type="button"
               onClick={() => {
-                setSelectedDeckId(deck.id);
-                setCardIndex(0);
-                setIsFlipped(false);
-                setShowHint(false);
-                setQuizIndex(0);
-                setQuizCompleted(false);
-                setScore(0);
-                setSeconds(0);
+                setActiveMode('arena');
+                setIsPlayingArena(false);
+                setGameResult(null);
               }}
-              className={`px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap flex items-center gap-2 transition-all ${
-                selectedDeckId === deck.id
-                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md scale-[1.02]'
-                  : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                activeMode === 'arena'
+                  ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
               }`}
             >
-              {deck.id === 'islamic' ? (
-                <Moon className="w-3.5 h-3.5 text-emerald-500" />
-              ) : (
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              )}
-              <span>{deck.title}</span>
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${
-                selectedDeckId === deck.id 
-                  ? 'bg-white/20 dark:bg-slate-900/20 text-white dark:text-slate-900 font-extrabold'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
-              }`}>
-                {deck.cards.length}
+              <Gamepad2 className="w-3.5 h-3.5" />
+              <span>গেম অ্যারেনা</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveMode('community');
+                setIsPlayingArena(false);
+                setGameResult(null);
+              }}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                activeMode === 'community'
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm font-extrabold'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+              }`}
+            >
+              <Globe className="w-3.5 h-3.5 text-pink-300" />
+              <span>কমিউনিটি গেমস</span>
+              <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-pink-500/30 text-white">
+                ১০+ লাইক
               </span>
             </button>
-          ))}
+
+            <button
+              onClick={() => {
+                setActiveMode('flashcards');
+                setIsPlayingArena(false);
+                setGameResult(null);
+              }}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                activeMode === 'flashcards'
+                  ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>৩D ফ্ল্যাশকার্ড</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* ==========================================
-          MODE 1: FLASHCARDS DECK
-         ========================================== */}
+      {/* =========================================================================
+          VIEW 1: LIVE GAMEPLAY ARENA (WHEN ACTIVE)
+         ========================================================================= */}
+      {isPlayingArena && arenaQuestions.length > 0 && (
+        <GamifiedPlayArena
+          questions={arenaQuestions}
+          settings={gameSettings}
+          onGameFinished={handleGameFinished}
+          onExit={() => setIsPlayingArena(false)}
+        />
+      )}
+
+      {/* =========================================================================
+          VIEW 2: VICTORY & GAME REPORT (WHEN FINISHED)
+         ========================================================================= */}
+      {!isPlayingArena && gameResult && (
+        <QuizVictoryReport
+          questions={arenaQuestions}
+          userAnswers={userGameAnswers}
+          result={gameResult}
+          onPlayAgainAll={handlePlayAgainAll}
+          onPlayAgainWrongOnly={handlePlayAgainWrongOnly}
+          onNewQuiz={() => {
+            setInitialModalTab('paste');
+            setIsInputModalOpen(true);
+          }}
+          onSaveToCommunity={() => setIsSaveModalOpen(true)}
+        />
+      )}
+
+      {/* =========================================================================
+          VIEW 3: COMMUNITY AI GAMES HUB (WITH 10 UPVOTE / 5 DOWNVOTE APPROVAL)
+         ========================================================================= */}
+      {!isPlayingArena && !gameResult && activeMode === 'community' && (
+        <div className="space-y-6 animate-fade-in">
+          <CommunityQuizHub
+            onPlayQuiz={(commQuestions) => {
+              setArenaQuestions(commQuestions);
+              setGameResult(null);
+              setUserGameAnswers([]);
+              setIsPlayingArena(true);
+              setActiveMode('arena');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenCreateModal={() => {
+              setInitialModalTab('paste');
+              setIsInputModalOpen(true);
+            }}
+          />
+        </div>
+      )}
+
+      {/* =========================================================================
+          VIEW 4: GAME ARENA LAUNCHPAD & DECK SHOWCASE (DEFAULT HOME)
+         ========================================================================= */}
+      {!isPlayingArena && !gameResult && activeMode === 'arena' && (
+        <div className="space-y-8 animate-fade-in">
+          
+          {/* 2-Column Serial List + Interactive Live Animation Launchpad */}
+          <InteractiveLaunchpadSection
+            onOpenModal={(tab) => {
+              setInitialModalTab(tab);
+              setIsInputModalOpen(true);
+            }}
+          />
+
+          {/* Pre-Play Deck Selector & Settings Studio */}
+          <div className="rounded-3xl p-6 sm:p-8 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs font-bold mb-1">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>রেডিমেড প্রশ্নব্যাংক নির্বাচন</span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                  কুইজ ডেক ও গেম সেটিংস
+                </h3>
+              </div>
+
+              {/* Game Settings Pills */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Question count */}
+                <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs">
+                  <span className="text-slate-400 px-1 font-bold">প্রশ্ন:</span>
+                  {[5, 10, 15].map(cnt => (
+                    <button
+                      key={cnt}
+                      onClick={() => setGameSettings(prev => ({ ...prev, questionCount: cnt }))}
+                      className={`px-2 py-1 rounded-lg font-bold transition cursor-pointer ${
+                        gameSettings.questionCount === cnt
+                          ? 'bg-indigo-600 text-white shadow-sm'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      }`}
+                    >
+                      {cnt}টি
+                    </button>
+                  ))}
+                </div>
+
+                {/* Time per question */}
+                <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs">
+                  <span className="text-slate-400 px-1 font-bold">টাইম:</span>
+                  {[
+                    { label: '15s', val: 15 },
+                    { label: '25s', val: 25 },
+                    { label: '∞', val: 0 }
+                  ].map(t => (
+                    <button
+                      key={t.val}
+                      onClick={() => setGameSettings(prev => ({ ...prev, timePerQuestion: t.val }))}
+                      className={`px-2 py-1 rounded-lg font-bold transition cursor-pointer ${
+                        gameSettings.timePerQuestion === t.val
+                          ? 'bg-purple-600 text-white shadow-sm'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Deck Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {decks.map(deck => {
+                const isSelected = selectedDeckId === deck.id;
+                return (
+                  <div
+                    key={deck.id}
+                    onClick={() => setSelectedDeckId(deck.id)}
+                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
+                      isSelected
+                        ? 'bg-indigo-50/70 dark:bg-indigo-950/50 border-indigo-500 shadow-md scale-[1.01]'
+                        : 'bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-800 hover:border-indigo-300'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300">
+                          {deck.subject}
+                        </span>
+                        <span className="text-xs font-bold text-slate-400">
+                          {deck.quizQuestions.length}টি প্রশ্ন
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                        {deck.title}
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                        {deck.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold">
+                      <span className={isSelected ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}>
+                        {isSelected ? '✓ নির্বাচিত' : 'নির্বাচন করুন'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Start Selected Game Button */}
+            <div className="pt-2 flex justify-center">
+              <button
+                onClick={handleStartArenaFromDeck}
+                className="px-8 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-sm font-black shadow-xl shadow-indigo-600/30 flex items-center gap-2.5 transition transform hover:scale-105 cursor-pointer"
+              >
+                <Play className="w-5 h-5 fill-white" />
+                <span>&quot;{currentDeck.title.slice(0, 25)}...&quot; গেম শুরু করুন ({Math.min(gameSettings.questionCount, currentDeck.quizQuestions.length)}টি প্রশ্ন)</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
+      {/* =========================================================================
+          VIEW 4: 3D FLASHCARDS PRACTICE MODE
+         ========================================================================= */}
       {activeMode === 'flashcards' && (
-        <div className="max-w-2xl mx-auto space-y-4">
-          {/* Progress & Quick Controls */}
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-slate-600 dark:text-slate-400 px-2">
-            <div className="flex items-center gap-3">
-              <span className="font-bold text-slate-900 dark:text-white">
+        <div className="space-y-6 animate-fade-in max-w-2xl mx-auto">
+          
+          {/* Flashcard Header Controls */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-500">
                 কার্ড {cardIndex + 1} / {currentDeck.cards.length}
               </span>
-              <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
-                <CheckCircle2 className="w-3.5 h-3.5" /> মুখস্থ: {masteredCards.size}
+              <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold">
+                • {currentDeck.subject}
               </span>
             </div>
 
             <div className="flex items-center gap-2">
               <button
-                type="button"
                 onClick={handleShuffleDeck}
-                className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition"
-                title="কার্ডগুলোর ক্রম র‍্যান্ডমাইজ করুন"
+                className="p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition flex items-center gap-1 cursor-pointer"
+                title="কার্ড শাফল করুন"
               >
-                <Shuffle className="w-3 h-3 text-amber-500" /> র‍্যান্ডমাইজ
+                <Shuffle className="w-3.5 h-3.5" />
+                <span>শাফল</span>
               </button>
 
-              {/* Jump to card input */}
-              <form onSubmit={handleJumpToCard} className="flex items-center gap-1">
-                <input
-                  type="number"
-                  min="1"
-                  max={currentDeck.cards.length}
-                  value={jumpInput}
-                  onChange={(e) => setJumpInput(e.target.value)}
-                  placeholder="নং..."
-                  className="w-14 px-2 py-1 text-xs rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-center focus:ring-1 focus:ring-amber-500"
-                />
-                <button
-                  type="submit"
-                  className="px-2 py-1 rounded-xl bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 transition"
-                >
-                  যান
-                </button>
-              </form>
+              <button
+                onClick={() => handleToggleMastered(currentCard.id)}
+                className={`p-2 rounded-xl border text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
+                  masteredCards.has(currentCard.id)
+                    ? 'bg-amber-100 dark:bg-amber-950 border-amber-300 text-amber-800 dark:text-amber-300'
+                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                }`}
+              >
+                <Bookmark className={`w-3.5 h-3.5 ${masteredCards.has(currentCard.id) ? 'fill-amber-500 text-amber-500' : ''}`} />
+                <span>{masteredCards.has(currentCard.id) ? 'শেখা শেষ' : 'বুকমার্ক'}</span>
+              </button>
             </div>
           </div>
 
-          {/* Interactive Card Canvas */}
-          {currentCard ? (
-            <div
-              onClick={() => setIsFlipped(!isFlipped)}
-              className="relative min-h-[300px] sm:min-h-[340px] rounded-3xl p-6 sm:p-8 bg-gradient-to-tr from-white to-amber-50/40 dark:from-slate-900 dark:to-amber-950/20 border-2 border-amber-500/30 hover:border-amber-500/60 shadow-xl cursor-pointer flex flex-col justify-between transition-all duration-300 transform select-none"
-            >
-              {/* Badge & Flip hint */}
-              <div className="flex items-center justify-between">
-                <span className={`text-[11px] font-black uppercase px-2.5 py-1 rounded-lg ${
-                  isFlipped ? 'bg-indigo-500 text-white' : 'bg-amber-500 text-white'
-                }`}>
-                  {isFlipped ? 'উত্তর (ANSWER)' : 'প্রশ্ন / ধারণা (QUESTION)'}
-                </span>
-
-                <span className="text-[11px] text-slate-400 italic">
-                  ক্লিক করে উল্টান ↻
-                </span>
-              </div>
-
-              {/* Main Content */}
-              <div className="py-6 text-center text-slate-900 dark:text-white">
-                {!isFlipped ? (
-                  <div className="text-base sm:text-xl font-bold leading-relaxed">
-                    <KaTeXViewer content={currentCard.front} />
-                  </div>
-                ) : (
-                  <div className="text-sm sm:text-lg font-medium text-indigo-950 dark:text-indigo-200 leading-relaxed">
-                    <KaTeXViewer content={currentCard.back} />
-                  </div>
-                )}
-
-                {/* Optional Hint */}
-                {showHint && currentCard.hint && !isFlipped && (
-                  <div className="mt-4 p-2.5 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-300 text-xs font-semibold inline-flex items-center gap-1.5 animate-fade-in">
-                    <Lightbulb className="w-3.5 h-3.5" />
-                    <span>ইঙ্গিত: {currentCard.hint}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Card Footer Actions */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
-                {currentCard.hint ? (
-                  <button
-                    type="button"
-                    onClick={() => setShowHint(!showHint)}
-                    className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1"
-                  >
-                    <Lightbulb className="w-3.5 h-3.5" /> {showHint ? 'ইঙ্গিত লুকান' : 'ইঙ্গিত দেখুন'}
-                  </button>
-                ) : <div />}
-
-                <button
-                  type="button"
-                  onClick={() => handleToggleMastered(currentCard.id)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
-                    masteredCards.has(currentCard.id)
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white'
-                  }`}
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  {masteredCards.has(currentCard.id) ? 'পড়া হয়েছে!' : 'পড়া হয়ে গেছে'}
-                </button>
-              </div>
+          {/* 3D Interactive Flip Card */}
+          <div 
+            onClick={() => setIsFlipped(!isFlipped)}
+            className="group relative min-h-[300px] sm:min-h-[360px] rounded-3xl p-8 bg-gradient-to-br from-white via-indigo-50/20 to-purple-50/30 dark:from-slate-900 dark:via-slate-900/90 dark:to-indigo-950/40 border-2 border-indigo-500/30 hover:border-indigo-500 backdrop-blur-2xl shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between select-none"
+          >
+            {/* Card Top Pill */}
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300">
+                {isFlipped ? 'উত্তর (Back Side)' : 'প্রশ্ন (Front Side)'}
+              </span>
+              <span className="text-xs text-slate-400 flex items-center gap-1">
+                <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
+                ক্লিক বা স্পেস চাপুন ফ্লিপ করতে
+              </span>
             </div>
-          ) : (
-            <div className="p-8 text-center text-slate-500">কোনো ফ্ল্যাশকার্ড পাওয়া যায়নি।</div>
-          )}
 
-          {/* Navigation Controls */}
-          <div className="flex items-center justify-between gap-4 pt-2">
-            <button
-              type="button"
-              onClick={handlePrevCard}
-              className="px-4 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-1 shadow-sm transition"
-            >
-              <ChevronLeft className="w-4 h-4" /> আগের কার্ড
-            </button>
-
-            <button
-              type="button"
-              onClick={handleNextCard}
-              className="px-6 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold flex items-center gap-1 shadow-md shadow-amber-500/20 transition"
-            >
-              পরের কার্ড <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          <p className="text-[11px] text-center text-slate-400 dark:text-slate-500">
-            টিপস: কীবোর্ডের <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">Space</kbd> দিয়ে উল্টান, <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">←</kbd> ও <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">→</kbd> দিয়ে নেভিগেট করুন।
-          </p>
-        </div>
-      )}
-
-
-      {/* ==========================================
-          MODE 2: TIMED MCQ QUIZ
-         ========================================== */}
-      {activeMode === 'quiz' && (
-        <div className="max-w-2xl mx-auto space-y-4">
-          {/* Question Limit Switcher */}
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 text-xs font-semibold">
-            <span className="text-slate-600 dark:text-slate-300">কুইজের দৈর্ঘ্য:</span>
-            <div className="flex items-center gap-1.5">
-              {[10, 25, 50, 100].map((count) => (
-                <button
-                  key={count}
-                  type="button"
-                  onClick={() => {
-                    setQuizQuestionLimit(count);
-                    handleRestartQuiz();
-                  }}
-                  className={`px-2.5 py-1 rounded-xl text-xs font-bold transition ${
-                    quizQuestionLimit === count
-                      ? 'bg-indigo-600 text-white shadow-md'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  {count === 100 ? '১০০টি (পূর্ণাঙ্গ)' : `${count}টি`}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {!quizCompleted && currentQuizQ ? (
-            <div className="space-y-4">
-              {/* Quiz Status Bar */}
-              <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm text-xs font-bold">
-                <span className="text-slate-600 dark:text-slate-300">
-                  প্রশ্ন {quizIndex + 1} / {activeQuizQuestions.length}
-                </span>
-                <span className="text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
-                  <Timer className="w-4 h-4 animate-spin text-indigo-500" /> সময়: {seconds} সে.
-                </span>
-                <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <Award className="w-4 h-4" /> স্কোর: {score}
-                </span>
+            {/* Card Content (Front vs Back) */}
+            <div className="py-8 text-center space-y-3">
+              <div className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white leading-relaxed">
+                {isFlipped ? currentCard.back : currentCard.front}
               </div>
-
-              {/* Question Card */}
-              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
-                <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed">
-                  <span className="text-indigo-600 mr-2">{quizIndex + 1}।</span>
-                  <KaTeXViewer content={currentQuizQ.question} />
-                </div>
-
-                {/* Options List */}
-                <div className="space-y-2.5">
-                  {currentQuizQ.options.map((opt, optIdx) => {
-                    const isSelected = selectedOption === optIdx;
-                    const isCorrect = optIdx === currentQuizQ.correctIndex;
-                    const banglaLabels = ['(ক)', '(খ)', '(গ)', '(ঘ)', '(ঙ)'];
-
-                    let btnClass = 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-indigo-500';
-
-                    if (isAnswerSubmitted) {
-                      if (isCorrect) {
-                        btnClass = 'bg-emerald-500/15 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold';
-                      } else if (isSelected && !isCorrect) {
-                        btnClass = 'bg-rose-500/15 border-rose-500 text-rose-700 dark:text-rose-300 font-bold';
-                      }
-                    }
-
-                    return (
-                      <button
-                        key={optIdx}
-                        type="button"
-                        onClick={() => handleSelectQuizOption(optIdx)}
-                        disabled={isAnswerSubmitted}
-                        className={`w-full p-3.5 rounded-2xl border text-left text-xs sm:text-sm flex items-center justify-between transition-all ${btnClass}`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-400">{banglaLabels[optIdx]}</span>
-                          <span><KaTeXViewer content={opt} /></span>
-                        </div>
-                        {isAnswerSubmitted && isCorrect && (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                        )}
-                        {isAnswerSubmitted && isSelected && !isCorrect && (
-                          <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Explanation on Answer Submitted */}
-                {isAnswerSubmitted && (
-                  <div className="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50 text-xs space-y-1 animate-fade-in">
-                    <span className="font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1">
-                      <Lightbulb className="w-3.5 h-3.5 text-indigo-600" /> ব্যাখ্যা:
-                    </span>
-                    <p className="text-slate-700 dark:text-slate-300">
-                      {currentQuizQ.explanation || 'সঠিক উত্তরটি চিহ্নিত করা হয়েছে।'}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Next Question Button */}
-              {isAnswerSubmitted && (
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={handleNextQuizQuestion}
-                    className="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 flex items-center gap-1.5 transition animate-fade-in"
-                  >
-                    {quizIndex < activeQuizQuestions.length - 1 ? 'পরবর্তী প্রশ্ন' : 'ফলাফল দেখুন'}
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+              {showHint && currentCard.hint && !isFlipped && (
+                <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800 animate-fade-in">
+                  💡 ইঙ্গিত: {currentCard.hint}
+                </p>
               )}
             </div>
-          ) : (
-            /* Quiz Completed View */
-            <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-6 shadow-2xl animate-fade-in">
-              <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
-                <Trophy className="w-10 h-10 text-white" />
-              </div>
 
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white">
-                  কুইজ সম্পন্ন হয়েছে! 🎉
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  আপনি {activeQuizQuestions.length}টি প্রশ্নের কুইজ সম্পন্ন করেছেন।
-                </p>
-              </div>
-
-              {/* Score Breakdown */}
-              <div className="grid grid-cols-3 gap-3 max-w-md mx-auto text-center">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                  <span className="text-[11px] text-slate-400 block font-semibold">মোট প্রশ্ন</span>
-                  <span className="text-lg font-black text-slate-900 dark:text-white">{activeQuizQuestions.length}</span>
-                </div>
-                <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900">
-                  <span className="text-[11px] text-emerald-600 block font-semibold">সঠিক উত্তর</span>
-                  <span className="text-lg font-black text-emerald-600">{score}</span>
-                </div>
-                <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900">
-                  <span className="text-[11px] text-indigo-600 block font-semibold">মোট সময়</span>
-                  <span className="text-lg font-black text-indigo-600">{seconds} সে.</span>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={handleRestartQuiz}
-                  className="px-6 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 mx-auto transition"
-                >
-                  <RotateCcw className="w-4 h-4" /> আবার কুইজ দিন
-                </button>
-              </div>
+            {/* Card Footer info */}
+            <div className="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <span>{currentDeck.title}</span>
+              <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                {isFlipped ? 'পুনরায় প্রশ্ন দেখুন ➔' : 'উত্তর দেখতে ফ্লিপ করুন ➔'}
+              </span>
             </div>
-          )}
+          </div>
+
+          {/* Bottom Next/Prev Navigation */}
+          <div className="flex items-center justify-between gap-3">
+            <button
+              onClick={handlePrevCard}
+              className="flex-1 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>পূর্ববর্তী কার্ড</span>
+            </button>
+
+            <button
+              onClick={handleNextCard}
+              className="flex-1 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>পরবর্তী কার্ড</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
+
+      {/* Universal Input Modal */}
+      <UniversalQuizInputModal
+        isOpen={isInputModalOpen}
+        onClose={() => setIsInputModalOpen(false)}
+        onQuizGenerated={handleCustomQuizGenerated}
+        initialTab={initialModalTab}
+      />
+
+      {/* Community Save & Publish Modal */}
+      <SaveQuizModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        questions={arenaQuestions}
+        onSaved={() => {
+          setActiveMode('community');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
     </div>
   );
 };
-
