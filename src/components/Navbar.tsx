@@ -92,6 +92,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       title: '🧠 স্টাডি ও প্র্যাকটিস',
       items: [
+        { id: 'memory-technique', label: '🧠 AI মেমরি টেকনিক ও ছন্দ', desc: 'অটো ছন্দ, ভিজ্যুয়াল স্কেচ ও ব্রেকডাউন', icon: Sparkles, badge: 'New AI' },
         { id: 'mcq-game', label: '🎮 AI MCQ গেম মেকার (Create Game)', desc: 'ছবি, ফাইল বা টেক্সট থেকে কুইজ গেম', icon: Gamepad2, badge: 'New Game' },
         { id: 'quiz-practice', label: '🗂️ ১০০+ ৩D ফ্ল্যাশকার্ড ডেক', desc: '১০০+ প্রশ্নব্যাংক ও কার্ড রিভিশন', icon: Sparkles, badge: '১০০+' },
         { id: 'study-summary', label: 'AI স্টাডি সামারি ও নোট', desc: 'স্বয়ংক্রিয় সারসংক্ষেপ ও রিভিশন নোট', icon: Sparkles, badge: 'AI' },

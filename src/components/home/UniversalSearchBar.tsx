@@ -27,6 +27,7 @@ export const UniversalSearchBar: React.FC<UniversalSearchBarProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
 
   const quickChips = [
+    { id: 'memory-technique', label: '🧠 মেমরি টেকনিক ও ছন্দ', icon: Sparkles, color: 'hover:border-amber-500 hover:text-amber-500' },
     { id: 'mcq-game', label: '🎮 ক্রিয়েট MCQ গেম', icon: Gamepad2, color: 'hover:border-purple-500 hover:text-purple-500' },
     { id: 'question-paper', label: '📄 প্রশ্নপত্র তৈরি', icon: FileText, color: 'hover:border-indigo-500 hover:text-indigo-500' },
     { id: 'omr-generator', label: '🫧 ওএমআর শিট', icon: Layers, color: 'hover:border-blue-500 hover:text-blue-500' },

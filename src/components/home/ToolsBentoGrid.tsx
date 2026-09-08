@@ -56,6 +56,17 @@ export const ToolsBentoGrid: React.FC<ToolsBentoGridProps> = ({ onSelectTab }) =
       features: ['২০, ২৫, ৫০ বা ১০০ প্রশ্ন সেট', 'রোল ও রেজিস্ট্রেশন নম্বর বাবল', 'ইনস্ট্যান্ট A4 পেজ প্রিন্ট']
     },
     {
+      id: 'memory-technique',
+      category: 'study',
+      title: '🧠 AI মেমরি টেকনিক ও ভিজ্যুয়াল ছন্দ',
+      subtitle: 'বিসিএস, ভর্তি ও চাকরির পরীক্ষার যেকোনো প্রশ্নের জন্য জাদুকরী বাংলা ছন্দ, কার্টুন স্কেচ ও ব্রেকডাউন',
+      icon: Sparkles,
+      badge: '🔥 নতুন মেমরি কোচ',
+      badgeColor: 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
+      gradient: 'from-amber-500 via-orange-500 to-rose-500',
+      features: ['অটো ছন্দ ও ফোনেটিক ওয়ার্ডপ্লে', 'ডিজিটাল স্কেচবুক ও স্লাইডশো ডেক', '১-ক্লিক A4 চিট-শিট ও PDF এক্সপোর্ট']
+    },
+    {
       id: 'study-summary',
       category: 'study',
       title: 'AI স্টাডি সামারি ও রিভিশন নোট',

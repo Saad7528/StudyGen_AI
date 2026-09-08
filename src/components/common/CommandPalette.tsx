@@ -55,6 +55,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   const commandItems: CommandItem[] = [
     {
+      id: 'memory-technique',
+      type: 'tab',
+      title: '🧠 AI মেমরি টেকনিক ও ভিজ্যুয়াল ছন্দ',
+      titleEn: 'AI Memory Technique & Visual Mnemonic Generator',
+      category: 'স্টাডি ও প্র্যাকটিস',
+      description: 'বিসিএস ও ভর্তি পরীক্ষার জন্য স্বয়ংক্রিয় বাংলা ছন্দ, ডুডল স্কেচ ও ব্রেকডাউন',
+      icon: Sparkles,
+      badge: '🔥 New AI',
+      keywords: ['mnemonic', 'memory', 'technique', 'rhyme', 'ছন্দ', 'সূত্র', 'মেমরি', 'শর্টকাট', 'ডুরান্ড', 'কার্জন', 'বীরশ্রেষ্ঠ']
+    },
+    {
       id: 'mcq-game',
       type: 'tab',
       title: '🎮 ক্রিয়েট ইউর MCQ গেম (Create Your Own Game)',
