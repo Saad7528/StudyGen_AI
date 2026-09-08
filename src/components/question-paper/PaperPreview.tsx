@@ -3,19 +3,23 @@
 import React from 'react';
 import { QuestionPaperData, QuestionItem } from '../../types/question-paper';
 import { KaTeXViewer } from '../KaTeXViewer';
-import { Columns, Layout, Printer, Download, Copy, Check, Sparkles, FileDown, ShieldCheck } from 'lucide-react';
+import { Columns, Layout, Printer, Download, Copy, Check, Sparkles, FileDown, ShieldCheck, Eye, Edit3 } from 'lucide-react';
 import { formatMathAndTextForDocx } from '../../lib/docx-generator';
 
 interface PaperPreviewProps {
   data: QuestionPaperData;
   onToggleColumns: () => void;
   onOpenExportModal: () => void;
+  viewMode?: 'preview' | 'edit';
+  onViewModeChange?: (mode: 'preview' | 'edit') => void;
 }
 
 export const PaperPreview: React.FC<PaperPreviewProps> = ({
   data,
   onToggleColumns,
-  onOpenExportModal
+  onOpenExportModal,
+  viewMode = 'preview',
+  onViewModeChange
 }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -147,18 +151,45 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           
-          {/* Left: Layout Mode Segmented Switcher */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
-              <span>লেআউট মোড:</span>
-            </div>
+          {/* Left: Mode Switcher & Column Layout Switcher */}
+          <div className="flex flex-wrap items-center gap-3">
+            
+            {/* View Mode Switcher (Preview vs Edit) */}
+            {onViewModeChange && (
+              <div className="flex items-center p-1 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => onViewModeChange('preview')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
+                    viewMode === 'preview'
+                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white'
+                  }`}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>লাইভ প্রিভিউ (A4)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onViewModeChange('edit')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
+                    viewMode === 'edit'
+                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white'
+                  }`}
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>এডিটর মোড</span>
+                </button>
+              </div>
+            )}
 
+            {/* Layout Mode Segmented Switcher */}
             <div className="flex items-center p-1 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-inner">
               <button
                 type="button"
                 onClick={onToggleColumns}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-2 transition-all duration-200 cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
                   data.twoColumnLayout
                     ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60'
@@ -175,7 +206,7 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
               <button
                 type="button"
                 onClick={onToggleColumns}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-2 transition-all duration-200 cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
                   !data.twoColumnLayout
                     ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60'

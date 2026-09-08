@@ -278,59 +278,48 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Step 2: Paper Workspace (Editor vs Live Preview) */}
+            {/* Step 2: Paper Workspace (Single Unified Toolbar & Views) */}
             <div className="space-y-6 pt-2">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 sm:p-4 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1 w-full sm:w-auto">
-                    মোড নির্বাচন:
-                  </span>
-                  <div className="flex flex-1 sm:flex-none items-center gap-2 w-full sm:w-auto">
-                    <button
-                      onClick={() => setPaperViewMode('preview')}
-                      className={`min-h-[38px] flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
-                        paperViewMode === 'preview'
-                          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>লাইভ প্রিভিউ (A4)</span>
-                    </button>
-                    <button
-                      onClick={() => setPaperViewMode('edit')}
-                      className={`min-h-[38px] flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
-                        paperViewMode === 'edit'
-                          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                      <span>এডিটর মোড</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <button
-                    onClick={() => setShowExportModal(true)}
-                    className="w-full sm:w-auto min-h-[38px] px-5 py-2 rounded-lg bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition cursor-pointer"
-                  >
-                    <Download className="w-4 h-4" />
-                    ডাউনলোড (.docx / Doc)
-                  </button>
-                </div>
-              </div>
-
-              {/* View Switch */}
               {paperViewMode === 'preview' ? (
                 <PaperPreview
                   data={paperData}
                   onToggleColumns={toggleColumns}
                   onOpenExportModal={() => setShowExportModal(true)}
+                  viewMode={paperViewMode}
+                  onViewModeChange={setPaperViewMode}
                 />
               ) : (
                 <div className="space-y-6">
+                  {/* Editor Mode Header Toolbar */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 sm:p-4 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm">
+                    <div className="flex items-center p-1 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-inner">
+                      <button
+                        type="button"
+                        onClick={() => setPaperViewMode('preview')}
+                        className="px-3.5 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>লাইভ প্রিভিউ (A4)</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPaperViewMode('edit')}
+                        className="px-3.5 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 transition bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xs cursor-pointer"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span>এডিটর মোড</span>
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => setShowExportModal(true)}
+                      className="min-h-[38px] px-5 py-2 rounded-lg bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition cursor-pointer"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>ডাউনলোড (.docx / Doc)</span>
+                    </button>
+                  </div>
+
                   <PaperHeaderEditor
                     header={paperData.header}
                     onChange={(newHeader) => setPaperData((prev) => ({ ...prev, header: newHeader }))}
