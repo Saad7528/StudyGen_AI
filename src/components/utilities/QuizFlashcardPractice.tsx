@@ -262,9 +262,9 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
     <div className="space-y-8 animate-fade-in pb-16">
       
       {/* Header Banner & Mode Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
             <Gamepad2 className="w-6 h-6" />
           </div>
           <div>
@@ -418,7 +418,7 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
           />
 
           {/* Pre-Play Deck Selector & Settings Studio */}
-          <div className="rounded-3xl p-6 sm:p-8 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
+          <div className="rounded-xl p-6 sm:p-8 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
             
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
               <div>
@@ -576,7 +576,7 @@ export const QuizFlashcardPractice: React.FC<QuizFlashcardPracticeProps> = ({ pa
           {/* 3D Interactive Flip Card */}
           <div 
             onClick={() => setIsFlipped(!isFlipped)}
-            className="group relative min-h-[300px] sm:min-h-[360px] rounded-3xl p-8 bg-gradient-to-br from-white via-indigo-50/20 to-purple-50/30 dark:from-slate-900 dark:via-slate-900/90 dark:to-indigo-950/40 border-2 border-indigo-500/30 hover:border-indigo-500 backdrop-blur-2xl shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between select-none"
+            className="group relative min-h-[300px] sm:min-h-[360px] rounded-xl p-8 bg-gradient-to-br from-white via-indigo-50/20 to-purple-50/30 dark:from-slate-900 dark:via-slate-900/90 dark:to-indigo-950/40 border-2 border-indigo-500/30 hover:border-indigo-500 backdrop-blur-2xl shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between select-none"
           >
             {/* Card Top Pill */}
             <div className="flex items-center justify-between">

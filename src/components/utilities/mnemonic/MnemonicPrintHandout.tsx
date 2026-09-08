@@ -35,7 +35,7 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
   return (
     <div className="space-y-6">
       {/* Control Banner (Hidden on Print) */}
-      <div className="print:hidden p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg flex flex-wrap items-center justify-between gap-4">
+      <div className="print:hidden p-4 sm:p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm">
             <Printer className="w-4 h-4" />
@@ -47,10 +47,10 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center rounded-2xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700">
             <button
               onClick={() => setPrintMode('master_side_by_side')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                 printMode === 'master_side_by_side'
                   ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
@@ -60,7 +60,7 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
             </button>
             <button
               onClick={() => setPrintMode('a4_cheatsheet')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                 printMode === 'a4_cheatsheet'
                   ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
@@ -70,7 +70,7 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
             </button>
             <button
               onClick={() => setPrintMode('slide_deck')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                 printMode === 'slide_deck'
                   ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
@@ -82,7 +82,7 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
 
           <button
             onClick={handlePrint}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs shadow-md hover:shadow-indigo-500/25 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 h-10 px-4 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs shadow-md hover:shadow-indigo-500/25 transition-all cursor-pointer"
           >
             <Download className="w-4 h-4" />
             <span>PDF ডাউনলোড / প্রিন্ট</span>
@@ -95,7 +95,7 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
          ========================================================================= */}
       <div 
         id="printable-mnemonic-handout"
-        className="printable-area bg-white text-slate-900 p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-xl max-w-5xl mx-auto print:p-0 print:border-none print:shadow-none print:max-w-none"
+        className="printable-area bg-white text-slate-900 p-6 sm:p-10 rounded-xl border border-slate-200 shadow-md max-w-5xl mx-auto print:p-0 print:border-none print:shadow-none print:max-w-none"
       >
         {/* Document Header */}
         <div className="border-b-2 border-indigo-600 pb-4 mb-6 flex items-center justify-between">
@@ -116,7 +116,7 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
 
         {/* MODE 0: MASTER DUAL COLUMN (Side-by-side with Art Image) */}
         {printMode === 'master_side_by_side' && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {items.map((item, idx) => {
               const fallbackImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(
                 `colored pencil hand-drawn sketch illustration, ${item.visual_cue.sketch_prompt || item.mnemonic_formula}, ${item.topic}, vintage educational textbook art`
@@ -127,7 +127,7 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
               return (
                 <div
                   key={idx}
-                  className="p-5 rounded-3xl border-2 border-slate-300 bg-[#FCFBF8] break-inside-avoid page-break-inside-avoid space-y-3"
+                  className="p-4 sm:p-5 rounded-xl border border-slate-300 bg-[#FCFBF8] break-inside-avoid page-break-inside-avoid space-y-3"
                 >
                   <div className="flex items-center justify-between border-b border-slate-300 pb-2">
                     <span className="font-extrabold text-sm text-indigo-700">
@@ -257,11 +257,11 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
 
         {/* MODE 2: VISUAL SLIDE DECK (Illustrated Booklets) */}
         {printMode === 'slide_deck' && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {items.map((item, idx) => (
               <div
                 key={idx}
-                className="p-6 rounded-3xl border-2 border-slate-300 bg-slate-50 break-inside-avoid page-break-inside-avoid space-y-4 shadow-sm"
+                className="p-5 sm:p-6 rounded-xl border border-slate-300 bg-slate-50 break-inside-avoid page-break-inside-avoid space-y-4 shadow-sm"
               >
                 <div className="flex items-center justify-between border-b border-slate-300 pb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-indigo-700">
@@ -274,14 +274,14 @@ export const MnemonicPrintHandout: React.FC<MnemonicPrintHandoutProps> = ({
 
                 <div className="text-center py-2">
                   <span className="text-xs font-bold text-slate-500 uppercase">প্রশ্ন</span>
-                  <h3 className="text-lg font-black text-slate-900">{item.question}</h3>
-                  <div className="text-sm font-bold text-emerald-700 mt-1">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900">{item.question}</h3>
+                  <div className="text-xs sm:text-sm font-bold text-emerald-700 mt-1">
                     উত্তর: {item.correct_answer}
                   </div>
                 </div>
 
                 {/* Mnemonic Banner */}
-                <div className="p-4 rounded-2xl bg-amber-100 border-2 border-amber-400 text-center">
+                <div className="p-3.5 sm:p-4 rounded-lg bg-amber-100 border border-amber-400 text-center">
                   <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">
                     মনে রাখার ছন্দ ও মেমোরি হ্যাক
                   </span>

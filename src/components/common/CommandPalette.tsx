@@ -307,7 +307,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-fade-in flex flex-col max-h-[80vh]"
+        className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-fade-in flex flex-col max-h-[80vh]"
         onClick={e => e.stopPropagation()}
       >
         {/* Search Header */}

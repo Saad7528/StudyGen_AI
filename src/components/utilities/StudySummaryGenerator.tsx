@@ -323,17 +323,17 @@ export const StudySummaryGenerator: React.FC<StudySummaryGeneratorProps> = ({ on
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-500 p-0.5 shadow-md">
-            <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
-              <FileText className="w-6 h-6 text-pink-500" />
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-500 p-0.5 shadow-xs">
+            <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[10px] flex items-center justify-center">
+              <FileText className="w-5 h-5 text-pink-500" />
             </div>
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
               AI Study Sheet & Summary Generator
               <span className="px-2 py-0.5 rounded-md bg-pink-500/10 text-pink-600 dark:text-pink-400 text-xs font-bold">
                 স্মার্ট নোট মেকার
@@ -349,7 +349,7 @@ export const StudySummaryGenerator: React.FC<StudySummaryGeneratorProps> = ({ on
           <button
             type="button"
             onClick={handleCopyText}
-            className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition"
+            className="h-9 px-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
             {copied ? 'কপি হয়েছে!' : 'কপি নোটস'}
@@ -357,7 +357,7 @@ export const StudySummaryGenerator: React.FC<StudySummaryGeneratorProps> = ({ on
           <button
             type="button"
             onClick={handlePrint}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 hover:opacity-95 text-white text-xs font-bold shadow-md shadow-pink-500/20 flex items-center gap-1.5 transition"
+            className="h-9 px-4 rounded-lg bg-gradient-to-r from-pink-600 to-rose-600 hover:opacity-95 text-white text-xs font-bold shadow-md shadow-pink-500/20 flex items-center gap-1.5 transition cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5" /> প্রিন্ট / PDF শিট
           </button>
@@ -365,7 +365,7 @@ export const StudySummaryGenerator: React.FC<StudySummaryGeneratorProps> = ({ on
       </div>
 
       {/* Preset Topics & Custom Input Box */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-md space-y-4">
+      <div className="p-4 sm:p-5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xs space-y-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
             রেডিমেড বিষয়সমূহ নির্বাচন করুন:
@@ -381,9 +381,9 @@ export const StudySummaryGenerator: React.FC<StudySummaryGeneratorProps> = ({ on
                 key={preset.id}
                 type="button"
                 onClick={() => handleSelectPreset(preset.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   selectedPreset === preset.id
-                    ? 'bg-pink-600 text-white shadow-md'
+                    ? 'bg-pink-600 text-white shadow-xs'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
@@ -409,14 +409,14 @@ export const StudySummaryGenerator: React.FC<StudySummaryGeneratorProps> = ({ on
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="যেমন: পর্যায় সারণির পর্যায়বৃত্ত ধর্ম ও ইলেকট্রন বিন্যাস অথবা কোনো অধ্যায়ের প্যারাগ্রাফ পেস্ট করুন..."
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-pink-500"
+            className="w-full p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-pink-500"
           />
           <div className="flex justify-end">
             <button
               type="button"
               onClick={handleGenerateCustom}
               disabled={isGenerating}
-              className="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 transition disabled:opacity-50"
+              className="h-10 px-4 rounded-lg bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 transition disabled:opacity-50 cursor-pointer"
             >
               {isGenerating ? (
                 <>

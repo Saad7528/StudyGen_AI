@@ -86,7 +86,7 @@ export const InteractiveLaunchpadSection: React.FC<InteractiveLaunchpadSectionPr
   ];
 
   return (
-    <div className="rounded-3xl p-6 sm:p-8 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
+    <div className="rounded-xl p-6 sm:p-8 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
       
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -104,7 +104,7 @@ export const InteractiveLaunchpadSection: React.FC<InteractiveLaunchpadSectionPr
 
         <button
           onClick={() => onOpenModal(selectedMethod)}
-          className="px-4 py-2 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 flex items-center gap-2 transition cursor-pointer self-start sm:self-auto"
+          className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 flex items-center gap-2 transition cursor-pointer self-start sm:self-auto"
         >
           <Sparkles className="w-4 h-4 text-amber-300" />
           <span>এখনই গেম বানান</span>

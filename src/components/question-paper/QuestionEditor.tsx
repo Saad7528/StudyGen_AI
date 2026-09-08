@@ -122,14 +122,14 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {sections.map((sec, secIdx) => (
         <div
           key={sec.id || secIdx}
-          className="p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-5"
+          className="p-4 sm:p-5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm space-y-4"
         >
           {/* Section Controls */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
             <div className="flex items-center gap-2 flex-1 w-full sm:w-auto">
               <Layers className="w-5 h-5 text-indigo-500 shrink-0" />
               <input
@@ -137,7 +137,7 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
                 value={sec.title}
                 onChange={(e) => handleUpdateSection(secIdx, { title: e.target.value })}
                 placeholder="বিভাগের নাম (যেমন: ক-বিভাগ: সৃজনশীল প্রশ্ন)"
-                className="w-full sm:w-80 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+                className="w-full sm:w-80 h-9 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -147,20 +147,20 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
                 value={sec.instruction || ''}
                 onChange={(e) => handleUpdateSection(secIdx, { instruction: e.target.value })}
                 placeholder="নির্দেশনা (যেমন: যেকোনো ৫টি প্রশ্নের উত্তর দাও)"
-                className="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 w-44"
+                className="h-9 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 w-44"
               />
               <input
                 type="text"
                 value={sec.totalMarks || ''}
                 onChange={(e) => handleUpdateSection(secIdx, { totalMarks: e.target.value })}
                 placeholder="মান (যেমন: ৫ x ১০ = ৫০)"
-                className="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 w-28 text-right"
+                className="h-9 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 w-28 text-right"
               />
               {sections.length > 1 && (
                 <button
                   type="button"
                   onClick={() => handleDeleteSection(secIdx)}
-                  className="p-2 rounded-xl text-rose-500 hover:bg-rose-500/10 transition"
+                  className="w-9 h-9 rounded-lg text-rose-500 hover:bg-rose-500/10 flex items-center justify-center transition cursor-pointer"
                   title="বিভাগ মুছুন"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -170,7 +170,7 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
           </div>
 
           {/* Question List inside Section */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {sec.questions.map((q, qIdx) => (
               <div
                 key={q.id || qIdx}
@@ -379,28 +379,28 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
           </div>
 
           {/* Add Question Button Bar */}
-          <div className="pt-2 flex flex-wrap items-center gap-2">
+          <div className="pt-1 flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1">
               নতুন প্রশ্ন যোগ করুন:
             </span>
             <button
               type="button"
               onClick={() => handleAddQuestion(secIdx, 'cq')}
-              className="px-3.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-indigo-600 dark:text-indigo-300 text-xs font-bold border border-indigo-500/20 flex items-center gap-1.5 transition"
+              className="h-8 px-3 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-indigo-600 dark:text-indigo-300 text-xs font-bold border border-indigo-500/20 flex items-center gap-1.5 transition cursor-pointer"
             >
               <HelpCircle className="w-3.5 h-3.5" /> + সৃজনশীল (CQ)
             </button>
             <button
               type="button"
               onClick={() => handleAddQuestion(secIdx, 'mcq')}
-              className="px-3.5 py-1.5 rounded-xl bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900 text-purple-600 dark:text-purple-300 text-xs font-bold border border-purple-500/20 flex items-center gap-1.5 transition"
+              className="h-8 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900 text-purple-600 dark:text-purple-300 text-xs font-bold border border-purple-500/20 flex items-center gap-1.5 transition cursor-pointer"
             >
               <CheckSquare className="w-3.5 h-3.5" /> + বহুনির্বাচনী (MCQ)
             </button>
             <button
               type="button"
               onClick={() => handleAddQuestion(secIdx, 'short')}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition"
+              className="h-8 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition cursor-pointer"
             >
               <AlignLeft className="w-3.5 h-3.5" /> + সংক্ষিপ্ত প্রশ্ন
             </button>
@@ -412,9 +412,9 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({ sections, onChan
       <button
         type="button"
         onClick={handleAddSection}
-        className="w-full py-4 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 bg-white/40 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition group"
+        className="w-full py-3.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 bg-white/40 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition group cursor-pointer"
       >
-        <Plus className="w-5 h-5 text-indigo-500 group-hover:scale-125 transition-transform" />
+        <Plus className="w-4 h-4 text-indigo-500 group-hover:scale-125 transition-transform" />
         নতুন পরীক্ষা বিভাগ যোগ করুন (Add Section)
       </button>
     </div>

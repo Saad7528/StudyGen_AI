@@ -149,7 +149,7 @@ export const CommunityQuizHub: React.FC<CommunityQuizHubProps> = ({
       )}
 
       {/* Community Rules & Voting Explainer Banner */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-purple-900/40 via-indigo-900/30 to-pink-900/40 border border-purple-500/30 backdrop-blur-xl shadow-lg relative overflow-hidden">
+      <div className="p-5 sm:p-6 rounded-xl bg-gradient-to-r from-purple-900/40 via-indigo-900/30 to-pink-900/40 border border-purple-500/30 backdrop-blur-xl shadow-lg relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
@@ -254,7 +254,7 @@ export const CommunityQuizHub: React.FC<CommunityQuizHubProps> = ({
           return (
             <div
               key={quiz.id}
-              className={`rounded-3xl p-5 sm:p-6 bg-white/90 dark:bg-slate-900/90 border-2 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden ${
+              className={`rounded-xl p-5 sm:p-6 bg-white/90 dark:bg-slate-900/90 border-2 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden ${
                 quiz.isPermanentFeatured
                   ? 'border-amber-400/70 dark:border-amber-500/50 shadow-amber-500/5'
                   : 'border-slate-200/80 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600'
@@ -365,7 +365,7 @@ export const CommunityQuizHub: React.FC<CommunityQuizHubProps> = ({
                 {/* Direct Play Button */}
                 <button
                   onClick={() => onPlayQuiz(quiz.questions, quiz.title)}
-                  className="w-full py-2 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-xs font-black shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 transition cursor-pointer hover:scale-[1.02] active:scale-95"
+                  className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-xs font-black shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 transition cursor-pointer hover:scale-[1.02] active:scale-95"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                   <span>🎮 এই গেমটি খেলুন</span>
@@ -378,7 +378,7 @@ export const CommunityQuizHub: React.FC<CommunityQuizHubProps> = ({
       </div>
 
       {filteredQuizzes.length === 0 && (
-        <div className="text-center py-12 p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-700 space-y-3">
+        <div className="text-center py-12 p-8 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-700 space-y-3">
           <Info className="w-8 h-8 mx-auto text-slate-400" />
           <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
             কোনো কুইজ গেম পাওয়া যায়নি
@@ -400,7 +400,7 @@ export const CommunityQuizHub: React.FC<CommunityQuizHubProps> = ({
          ========================================================================= */}
       {activeFeedbackQuiz && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+          <div className="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
             
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>

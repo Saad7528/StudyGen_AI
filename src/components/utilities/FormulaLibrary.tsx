@@ -30,10 +30,10 @@ export const FormulaLibrary: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header & Filter Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
@@ -85,7 +85,7 @@ export const FormulaLibrary: React.FC = () => {
         {filteredFormulas.map((item) => (
           <div
             key={item.id}
-            className="p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg flex flex-col justify-between space-y-4 group hover:border-indigo-500/50 transition"
+            className="p-5 sm:p-6 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg flex flex-col justify-between space-y-4 group hover:border-indigo-500/50 transition"
           >
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">

@@ -193,9 +193,9 @@ export const ToolsBentoGrid: React.FC<ToolsBentoGridProps> = ({ onSelectTab }) =
   return (
     <div className="space-y-8 pt-4">
       {/* Metrics & Social Proof Ribbon */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 sm:p-5 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-lg">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 sm:p-5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-lg">
         <div className="flex items-center gap-3 p-2">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
             <Zap className="w-5 h-5" />
           </div>
           <div>
@@ -275,7 +275,7 @@ export const ToolsBentoGrid: React.FC<ToolsBentoGridProps> = ({ onSelectTab }) =
             <div
               key={tool.id}
               onClick={() => onSelectTab(tool.id)}
-              className={`group relative p-6 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-400 dark:hover:border-indigo-500 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between overflow-hidden glass-card-hover ${
+              className={`group relative p-6 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-400 dark:hover:border-indigo-500 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between overflow-hidden glass-card-hover ${
                 isHero ? 'md:col-span-2 bg-gradient-to-br from-indigo-50/60 via-white/80 to-purple-50/60 dark:from-indigo-950/30 dark:via-slate-900/80 dark:to-purple-950/30' : ''
               }`}
             >
@@ -285,7 +285,7 @@ export const ToolsBentoGrid: React.FC<ToolsBentoGridProps> = ({ onSelectTab }) =
               <div>
                 {/* Header info */}
                 <div className="flex items-start justify-between gap-3 mb-4">
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${tool.gradient} text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform duration-300 shrink-0`}>
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-tr ${tool.gradient} text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform duration-300 shrink-0`}>
                     <Icon className="w-6 h-6" />
                   </div>
                   <span className={`text-[11px] font-extrabold px-3 py-1 rounded-full border shadow-sm ${tool.badgeColor}`}>

@@ -141,7 +141,7 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
   return (
     <div className="space-y-5">
       {/* Ultra-Premium Glassmorphic Action Toolbar */}
-      <div className="relative overflow-hidden p-3 sm:p-4 rounded-3xl bg-gradient-to-r from-white/90 via-indigo-50/40 to-white/90 dark:from-slate-900/90 dark:via-indigo-950/30 dark:to-slate-900/90 border border-indigo-100/80 dark:border-indigo-900/40 backdrop-blur-2xl shadow-xl shadow-indigo-500/5 transition-all">
+      <div className="relative overflow-hidden p-3 sm:p-4 rounded-xl bg-gradient-to-r from-white/90 via-indigo-50/40 to-white/90 dark:from-slate-900/90 dark:via-indigo-950/30 dark:to-slate-900/90 border border-indigo-100/80 dark:border-indigo-900/40 backdrop-blur-2xl shadow-sm transition-all">
         {/* Ambient Top Glow Line */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
 
@@ -149,18 +149,18 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
           
           {/* Left: Layout Mode Segmented Switcher */}
           <div className="flex flex-wrap items-center gap-2.5">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
               <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
               <span>লেআউট মোড:</span>
             </div>
 
-            <div className="flex items-center p-1 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-inner">
+            <div className="flex items-center p-1 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-inner">
               <button
                 type="button"
                 onClick={onToggleColumns}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 ${
+                className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-2 transition-all duration-200 cursor-pointer ${
                   data.twoColumnLayout
-                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30 scale-[1.02]'
+                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60'
                 }`}
                 title="বোর্ড স্ট্যান্ডার্ড ২-কলাম প্রশ্নপত্র ফরম্যাট"
@@ -175,9 +175,9 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
               <button
                 type="button"
                 onClick={onToggleColumns}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 ${
+                className={`px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-2 transition-all duration-200 cursor-pointer ${
                   !data.twoColumnLayout
-                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30 scale-[1.02]'
+                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60'
                 }`}
                 title="১-কলাম ক্লাসিক প্রশ্নপত্র ফরম্যাট"
@@ -192,12 +192,12 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
           </div>
 
           {/* Right: Premium Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             {/* Copy Button */}
             <button
               type="button"
               onClick={handleCopyText}
-              className="px-3.5 py-2 rounded-2xl bg-white dark:bg-slate-800/90 hover:bg-slate-50 dark:hover:bg-slate-700/90 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all"
+              className="h-9 px-3.5 rounded-lg bg-white dark:bg-slate-800/90 hover:bg-slate-50 dark:hover:bg-slate-700/90 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700/80 shadow-xs flex items-center gap-1.5 transition cursor-pointer"
               title="গুগল ডকে সরাসরি পেস্ট করার জন্য ফরম্যাটেড টেক্সট কপি করুন"
             >
               {copied ? (
@@ -217,14 +217,14 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
             <button
               type="button"
               onClick={handlePrint}
-              className="group relative px-4 py-2 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-xs font-bold shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+              className="group relative h-9 px-3.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-xs font-bold shadow-xs transition flex items-center gap-2 cursor-pointer"
               title="সরাসরি শুধুমাত্র প্রশ্নপত্রটিকে A4 সাইজে প্রিন্ট বা PDF হিসেবে সেভ করুন"
             >
-              <div className="p-1 rounded-lg bg-white/10 dark:bg-slate-900/10 group-hover:rotate-12 transition-transform">
+              <div className="p-0.5 rounded bg-white/10 dark:bg-slate-900/10 group-hover:rotate-12 transition-transform">
                 <Printer className="w-3.5 h-3.5 text-cyan-400 dark:text-indigo-600" />
               </div>
               <span>প্রিন্ট / PDF</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 dark:text-indigo-600 font-extrabold">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 dark:text-indigo-600 font-extrabold">
                 A4 রেডি
               </span>
             </button>
@@ -233,12 +233,11 @@ export const PaperPreview: React.FC<PaperPreviewProps> = ({
             <button
               type="button"
               onClick={onOpenExportModal}
-              className="relative px-5 py-2 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white text-xs font-extrabold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-105 active:scale-95 flex items-center gap-2 transition-all overflow-hidden group"
+              className="relative h-9 px-4 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white text-xs font-extrabold shadow-md shadow-indigo-500/20 flex items-center gap-2 transition overflow-hidden group cursor-pointer"
               title="সম্পূর্ণ ১০০% এডিটেবল Microsoft Word (.docx) ফাইল ডাউনলোড করুন"
             >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              <Download className="w-3.5 h-3.5 animate-bounce relative z-10" />
-              <span className="relative z-10">.docx এক্সপোর্ট</span>
+              <Download className="w-3.5 h-3.5" />
+              <span>.docx এক্সপোর্ট</span>
             </button>
           </div>
 

@@ -257,29 +257,29 @@ export const MemoryTechniqueGenerator: React.FC = () => {
       {/* =========================================================================
           HERO BANNER & HEADER
          ========================================================================= */}
-      <div className="relative rounded-3xl bg-gradient-to-br from-indigo-900 via-purple-950 to-slate-950 text-white p-6 sm:p-10 border border-indigo-500/20 shadow-2xl overflow-hidden">
+      <div className="relative rounded-2xl bg-gradient-to-br from-indigo-900 via-purple-950 to-slate-950 text-white p-6 sm:p-8 border border-indigo-500/20 shadow-xl overflow-hidden">
         {/* Background glow & sparkles */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold shadow-xs">
+        <div className="relative z-10 max-w-3xl space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold shadow-xs">
             <Flame className="w-4 h-4 text-amber-400" />
             <span>StudyGenAI AI মেমরি কোচ ও ভিজ্যুয়াল ছন্দ ইঞ্জিন ২০২৬</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+          <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight leading-tight">
             স্মার্ট মেমরি টেকনিক, ফোনেটিক ছন্দ ও ভিজ্যুয়াল স্কেচ নোট
           </h1>
 
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
             পরীক্ষার হলে দীর্ঘ উত্তর ভুলে যাওয়ার ভয় আর নেই! যেকোনো সাধারণ জ্ঞান বা কঠিন তথ্যের জন্য 
             স্বয়ংক্রিয় <strong className="text-amber-300">বাংলা ছন্দ (Mnemonics)</strong>, 
             <strong className="text-cyan-300"> রঙিন পেন্সিল স্কেচ আর্ট</strong> এবং 
             <strong className="text-emerald-300"> ধাপে ধাপে সিলেবল ব্রেকডাউন</strong> তৈরি করুন।
           </p>
 
-          <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-semibold text-slate-300">
+          <div className="flex flex-wrap items-center gap-3 pt-1 text-xs font-semibold text-slate-300">
             <span className="flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
               স্বরবর্ণ ও এক্রোনিম শর্টকাট
@@ -299,7 +299,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
       {/* =========================================================================
           GENERATOR INPUT SECTION (With Bengali Voice Dictation)
          ========================================================================= */}
-      <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl p-6 sm:p-8 space-y-6">
+      <div className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-5">
         {/* Mode Selector */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2">
@@ -309,10 +309,10 @@ export const MemoryTechniqueGenerator: React.FC = () => {
             </h2>
           </div>
 
-          <div className="flex items-center rounded-2xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700">
             <button
               onClick={() => setInputMode('mode_a')}
-              className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3 sm:px-4 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                 inputMode === 'mode_a'
                   ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
@@ -322,7 +322,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
             </button>
             <button
               onClick={() => setInputMode('mode_b')}
-              className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3 sm:px-4 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                 inputMode === 'mode_b'
                   ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
@@ -345,7 +345,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
               <button
                 key={p.id}
                 onClick={() => handleSelectPreset(p)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all cursor-pointer"
               >
                 <span>{p.icon}</span>
                 <span>{p.title}</span>
@@ -371,7 +371,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="যেমন: বিশ্বের বিখ্যাত সীমারেখা / বাংলাদেশ বিষয়াবলী / সাধারণ জ্ঞান"
-              className="w-full px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -400,7 +400,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
                   ? 'যেমন: ডুরান্ড লাইন কোন দুটি দেশের মধ্যকার সীমারেখা? (অথবা মাইক্রোফোনে চাপ দিয়ে বলুন)'
                   : 'যেমন: বাংলাদেশের সাতজন বীরশ্রেষ্ঠের নাম কী কী?'
               }
-              className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="w-full p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
             />
           </div>
 
@@ -421,7 +421,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="যেমন: আফগানিস্তান ও পাকিস্তান (অথবা হামিদুর, জাহাঙ্গীর, রুহুল আমীন...)"
-                className="w-full px-4 py-2.5 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-300 dark:border-emerald-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                className="w-full p-3 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-300 dark:border-emerald-800 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
               />
             </div>
           )}
@@ -432,7 +432,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
               হাতে লেখা খাতার নোট বা বইয়ের পাতার ছবি আপলোড (Vision OCR):
             </label>
             <div className="flex flex-wrap items-center gap-3">
-              <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer transition-colors">
+              <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer transition-colors">
                 <Upload className="w-4 h-4 text-indigo-500" />
                 <span>ছবি যুক্ত করুন (Upload Notes/Page)</span>
                 <input
@@ -460,7 +460,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
                 {images.map((img, idx) => (
                   <div
                     key={idx}
-                    className="relative w-16 h-16 rounded-xl overflow-hidden border-2 border-indigo-500/50 shadow-xs group"
+                    className="relative w-16 h-16 rounded-lg overflow-hidden border-2 border-indigo-500/50 shadow-xs group"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={img} alt={`Upload ${idx + 1}`} className="w-full h-full object-cover" />
@@ -480,7 +480,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
 
         {/* Error Notice */}
         {errorMessage && (
-          <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs font-semibold">
+          <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs font-semibold">
             {errorMessage}
           </div>
         )}
@@ -495,7 +495,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
           <button
             onClick={handleGenerate}
             disabled={isLoading}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-bold text-sm shadow-lg hover:shadow-indigo-500/25 transition-all disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-2 h-11 px-5 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-bold text-sm shadow-md hover:shadow-indigo-500/25 transition-all disabled:opacity-50 cursor-pointer"
           >
             {isLoading ? (
               <>
@@ -518,12 +518,12 @@ export const MemoryTechniqueGenerator: React.FC = () => {
       {mnemonicList.length > 0 && (
         <div className="space-y-6 animate-fade-in">
           {/* View Switcher & Toolbar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md">
+          <div className="flex flex-wrap items-center justify-between gap-4 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
             {/* Left View Tabs */}
-            <div className="flex flex-wrap items-center rounded-2xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 gap-1">
+            <div className="flex flex-wrap items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 gap-1">
               <button
                 onClick={() => setViewMode('master_table')}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   viewMode === 'master_table'
                     ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                     : 'text-slate-600 dark:text-slate-400'
@@ -535,7 +535,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
 
               <button
                 onClick={() => setViewMode('sketchbook')}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   viewMode === 'sketchbook'
                     ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                     : 'text-slate-600 dark:text-slate-400'
@@ -547,7 +547,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
 
               <button
                 onClick={() => setViewMode('slideshow')}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   viewMode === 'slideshow'
                     ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                     : 'text-slate-600 dark:text-slate-400'
@@ -559,7 +559,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
 
               <button
                 onClick={() => setViewMode('print_handout')}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
                   viewMode === 'print_handout'
                     ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                     : 'text-slate-600 dark:text-slate-400'
@@ -579,13 +579,13 @@ export const MemoryTechniqueGenerator: React.FC = () => {
                   value={searchFilter}
                   onChange={(e) => setSearchFilter(e.target.value)}
                   placeholder="সূত্র বা টপিক খুঁজুন..."
-                  className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full h-9 pl-9 pr-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
               </div>
 
               <button
                 onClick={() => setMnemonicList([])}
-                className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-950/60 hover:text-rose-600 dark:hover:text-rose-300 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+                className="h-9 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-950/60 hover:text-rose-600 dark:hover:text-rose-300 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
               >
                 সব মুছুন
               </button>

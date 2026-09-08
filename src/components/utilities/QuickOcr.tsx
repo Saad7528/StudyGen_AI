@@ -59,9 +59,9 @@ export const QuickOcr: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
             <FileText className="w-5 h-5" />
           </div>
           <div>
@@ -80,7 +80,7 @@ export const QuickOcr: React.FC = () => {
           {/* Upload Area */}
           <div
             onClick={() => fileRef.current?.click()}
-            className="border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-indigo-500 transition min-h-[260px] bg-slate-50 dark:bg-slate-950/60"
+            className="border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-indigo-500 transition min-h-[260px] bg-slate-50 dark:bg-slate-950/60"
           >
             {image ? (
               <img src={image} alt="Uploaded" className="max-h-56 object-contain rounded-xl" />

@@ -37,7 +37,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
   };
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-6">
+    <div className="p-4 sm:p-6 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-2">
           <School className="w-5 h-5 text-indigo-500" />
@@ -47,7 +47,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
         </div>
 
         {/* Theme Style selector */}
-        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
+        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-lg">
           <Palette className="w-3.5 h-3.5 text-slate-400 ml-1.5" />
           <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">স্টাইল:</span>
           {(['standard', 'boxed', 'classic', 'cadet'] as const).map((style) => (
@@ -55,9 +55,9 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
               key={style}
               type="button"
               onClick={() => handleChange('themeStyle', style)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition ${
+              className={`px-2.5 py-1 rounded-md text-xs font-semibold capitalize transition cursor-pointer ${
                 (header.themeStyle || 'standard') === style
-                  ? 'bg-indigo-600 text-white shadow-sm'
+                  ? 'bg-indigo-600 text-white shadow-xs'
                   : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600'
               }`}
             >
@@ -79,13 +79,13 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
               value={header.schoolName}
               onChange={(e) => handleChange('schoolName', e.target.value)}
               placeholder="যেমন: মতিঝিল সরকারি বালক উচ্চ বিদ্যালয়"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 font-medium"
+              className="w-full h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 font-medium"
             />
           </div>
         </div>
 
         {/* Logo Upload & Watermark Row */}
-        <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 space-y-3">
+        <div className="p-3.5 sm:p-4 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 space-y-3">
           <label className="block text-xs font-bold text-indigo-950 dark:text-indigo-200 flex items-center gap-1.5">
             <ImageIcon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
             স্কুল / প্রতিষ্ঠানের লোগো
@@ -93,13 +93,13 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
 
           <div className="flex items-center gap-3">
             {header.logoUrl ? (
-              <div className="relative w-14 h-14 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-white p-1 flex items-center justify-center shrink-0 shadow-sm">
+              <div className="relative w-14 h-14 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white p-1 flex items-center justify-center shrink-0 shadow-xs">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={header.logoUrl} alt="Logo" className="w-full h-full object-contain" />
                 <button
                   type="button"
                   onClick={() => handleChange('logoUrl', undefined)}
-                  className="absolute -top-2 -right-2 p-1 rounded-full bg-rose-500 text-white shadow hover:bg-rose-600 transition"
+                  className="absolute -top-2 -right-2 p-1 rounded-full bg-rose-500 text-white shadow hover:bg-rose-600 transition cursor-pointer"
                   title="লোগো মুছুন"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -108,7 +108,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
             ) : (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="w-14 h-14 rounded-xl border-2 border-dashed border-indigo-300 dark:border-indigo-800 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition shrink-0"
+                className="w-14 h-14 rounded-lg border-2 border-dashed border-indigo-300 dark:border-indigo-800 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition shrink-0"
               >
                 <ImageIcon className="w-5 h-5 text-indigo-400" />
                 <span className="text-[9px] font-semibold text-indigo-600 dark:text-indigo-300 mt-0.5">লোগো দিন</span>
@@ -126,7 +126,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm"
+                className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-xs cursor-pointer"
               >
                 {header.logoUrl ? 'লোগো পরিবর্তন করুন' : 'লোগো আপলোড করুন'}
               </button>
@@ -138,7 +138,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
         </div>
 
         {/* Watermark & Signatures */}
-        <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 space-y-3">
+        <div className="p-3.5 sm:p-4 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 space-y-3">
           <label className="block text-xs font-bold text-indigo-950 dark:text-indigo-200 flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
             ওয়াটারমার্ক ও অফিশিয়াল সিল
@@ -149,7 +149,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
             value={header.watermarkText || ''}
             onChange={(e) => handleChange('watermarkText', e.target.value)}
             placeholder="যেমন: মতিঝিল আইডিয়াল স্কুল"
-            className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+            className="w-full h-9 px-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
           />
 
           <label className="flex items-center gap-2 cursor-pointer select-none pt-1">
@@ -176,7 +176,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
               value={header.examTitle}
               onChange={(e) => handleChange('examTitle', e.target.value)}
               placeholder="যেমন: বার্ষিক পরীক্ষা — ২০২৬"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+              className="w-full h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
@@ -191,7 +191,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
             value={header.className}
             onChange={(e) => handleChange('className', e.target.value)}
             placeholder="যেমন: দশম শ্রেণি"
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+            className="w-full h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
@@ -206,7 +206,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
               value={header.subject}
               onChange={(e) => handleChange('subject', e.target.value)}
               placeholder="যেমন: উচ্চতর গণিত"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+              className="w-full h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
@@ -221,7 +221,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
             value={header.subjectCode || ''}
             onChange={(e) => handleChange('subjectCode', e.target.value)}
             placeholder="যেমন: ১২৬"
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+            className="w-full h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
@@ -235,7 +235,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
             value={header.timeAllowed}
             onChange={(e) => handleChange('timeAllowed', e.target.value)}
             placeholder="যেমন: ২ ঘণ্টা ৩০ মিনিট"
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+            className="w-full h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
@@ -249,7 +249,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
             value={header.fullMarks}
             onChange={(e) => handleChange('fullMarks', e.target.value)}
             placeholder="যেমন: ৫০ বা ১০০"
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+            className="w-full h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
@@ -263,7 +263,7 @@ export const PaperHeaderEditor: React.FC<PaperHeaderEditorProps> = ({ header, on
             value={header.generalInstructions || ''}
             onChange={(e) => handleChange('generalInstructions', e.target.value)}
             placeholder="যেমন: বিশেষ দ্রষ্টব্য: ডানপাশের সংখ্যা প্রশ্নের পূর্ণমান জ্ঞাপক।"
-            className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 resize-none"
+            className="w-full p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 resize-none"
           />
         </div>
       </div>

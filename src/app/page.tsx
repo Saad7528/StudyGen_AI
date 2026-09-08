@@ -30,6 +30,7 @@ import { FocusExamTimer } from '../components/common/FocusExamTimer';
 import { UniversalSearchBar } from '../components/home/UniversalSearchBar';
 import { LiveWorkflowShowcase } from '../components/home/LiveWorkflowShowcase';
 import { ToolsBentoGrid } from '../components/home/ToolsBentoGrid';
+import { HeroSplitSection } from '../components/home/HeroSplitSection';
 
 import { 
   Sparkles, 
@@ -249,30 +250,11 @@ export default function HomePage() {
            ========================================== */}
         {activeTab === 'question-paper' && (
           <div className="space-y-12 animate-fade-in">
-            {/* Hero Header & Brand Showcase */}
-            <div className="text-center max-w-3xl mx-auto space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-pink-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-black shadow-sm">
-                <Sparkles className="w-4 h-4 text-pink-500 animate-spin" />
-                <span>StudyGen AI — ফ্ল্যাগশিপ AI Photo to Google Docs Question Suite</span>
-              </div>
-
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15]">
-                খাতায় লিখুন, ছবি তুলুন — পেয়ে যান{' '}
-                <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-300 dark:to-pink-400 bg-clip-text text-transparent">
-                  গুগল ডক এডিটেবল প্রশ্নপত্র
-                </span>
-              </h1>
-
-              <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                হাতে লেখা বা বইয়ের পাতার ছবি আপলোড করলেই এআই স্বয়ংক্রিয়ভাবে সৃজনশীল (CQ), বহুনির্বাচনী (MCQ) ও মান বণ্টন সাজিয়ে <strong>১০০% এডিটেবল .docx</strong> ফাইল তৈরি করে দেয়।
-              </p>
-
-              {/* Universal Search & Quick Action Launcher */}
-              <UniversalSearchBar
-                onSelectTab={setActiveTab}
-                onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
-              />
-            </div>
+            {/* Hero Split Section: Dual Column & Bento Cards */}
+            <HeroSplitSection
+              onSelectTab={setActiveTab}
+              onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+            />
 
             {/* Live 3-Step Workflow Showcase */}
             <LiveWorkflowShowcase />
@@ -298,7 +280,7 @@ export default function HomePage() {
 
             {/* Step 2: Paper Workspace (Editor vs Live Preview) */}
             <div className="space-y-6 pt-2">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 sm:p-4 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1 w-full sm:w-auto">
                     মোড নির্বাচন:
@@ -306,7 +288,7 @@ export default function HomePage() {
                   <div className="flex flex-1 sm:flex-none items-center gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => setPaperViewMode('preview')}
-                      className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
+                      className={`min-h-[38px] flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
                         paperViewMode === 'preview'
                           ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -317,7 +299,7 @@ export default function HomePage() {
                     </button>
                     <button
                       onClick={() => setPaperViewMode('edit')}
-                      className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
+                      className={`min-h-[38px] flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
                         paperViewMode === 'edit'
                           ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -332,7 +314,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <button
                     onClick={() => setShowExportModal(true)}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 transition cursor-pointer"
+                    className="w-full sm:w-auto min-h-[38px] px-5 py-2 rounded-lg bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
                     ডাউনলোড (.docx / Doc)

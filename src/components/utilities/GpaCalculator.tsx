@@ -71,7 +71,7 @@ export const GpaCalculator: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Result Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-pink-600 text-white shadow-2xl relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-pink-600 text-white shadow-2xl relative overflow-hidden">
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md">
@@ -94,7 +94,7 @@ export const GpaCalculator: React.FC = () => {
             onClick={() => {
               confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
             }}
-            className="px-6 py-3 rounded-2xl bg-white text-indigo-600 font-bold text-xs sm:text-sm shadow-xl hover:scale-105 active:scale-95 transition"
+            className="px-6 py-3 rounded-lg bg-white text-indigo-600 font-bold text-xs sm:text-sm shadow-xl hover:scale-105 active:scale-95 transition"
           >
             🎉 ফলাফল সেলিব্রেট করুন
           </button>
@@ -102,7 +102,7 @@ export const GpaCalculator: React.FC = () => {
       </div>
 
       {/* Subject List Editor */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5 text-indigo-500" />

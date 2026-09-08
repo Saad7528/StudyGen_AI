@@ -81,7 +81,7 @@ export const LiveWorkflowShowcase: React.FC = () => {
   }, [activeStep]);
 
   return (
-    <div className="w-full rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-indigo-50/70 via-white/70 to-purple-50/50 dark:from-slate-900/90 dark:via-slate-900/60 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-xl overflow-hidden relative">
+    <div className="w-full rounded-2xl p-6 sm:p-8 bg-gradient-to-b from-indigo-50/70 via-white/70 to-purple-50/50 dark:from-slate-900/90 dark:via-slate-900/60 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-xl overflow-hidden relative">
       
       {/* Background Ambient Glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
@@ -187,7 +187,7 @@ export const LiveWorkflowShowcase: React.FC = () => {
             RIGHT COLUMN (7 Cols): Sleek Animated Simulator Canvas
            ========================================================= */}
         <div className="lg:col-span-7">
-          <div className="rounded-3xl bg-slate-950 text-white border border-slate-800 shadow-2xl overflow-hidden relative flex flex-col min-h-[350px] sm:min-h-[390px]">
+          <div className="rounded-xl bg-slate-950 text-white border border-slate-800 shadow-2xl overflow-hidden relative flex flex-col min-h-[350px] sm:min-h-[390px]">
             
             {/* Window Topbar */}
             <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800 text-xs">

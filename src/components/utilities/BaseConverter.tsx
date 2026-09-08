@@ -65,9 +65,9 @@ export const BaseConverter: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
             <Binary className="w-5 h-5" />
           </div>
           <div>

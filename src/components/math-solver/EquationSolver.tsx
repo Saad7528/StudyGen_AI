@@ -43,9 +43,9 @@ export const EquationSolver: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Input Box Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
             <Calculator className="w-5 h-5" />
           </div>
           <div>
@@ -117,7 +117,7 @@ export const EquationSolver: React.FC = () => {
       {solution && (
         <div className="space-y-4 animate-fade-in">
           {/* Final Answer Banner */}
-          <div className="p-6 rounded-3xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-indigo-500/10 border border-emerald-500/30 backdrop-blur-xl">
+          <div className="p-6 rounded-xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-indigo-500/10 border border-emerald-500/30 backdrop-blur-xl">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 mb-1">
@@ -136,7 +136,7 @@ export const EquationSolver: React.FC = () => {
           </div>
 
           {/* Step-by-Step Breakdown Cards */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
+          <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-200 dark:border-slate-800">
               ধাপে ধাপে সমাধান প্রক্রিয়া (Step-by-Step Explanation)
             </h3>
@@ -172,7 +172,7 @@ export const EquationSolver: React.FC = () => {
 
           {/* Interactive Graph Visualizer */}
           {solution.graphFormula && (
-            <div className="p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-3">
+            <div className="p-6 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-3">
               <div className="flex items-center gap-2">
                 <BarChart2 className="w-5 h-5 text-indigo-500" />
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">

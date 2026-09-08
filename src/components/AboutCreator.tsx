@@ -79,14 +79,14 @@ export const AboutCreator: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
       {/* Hero Creator Profile Card */}
-      <div className="relative overflow-hidden p-8 sm:p-12 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-2xl space-y-6">
+      <div className="relative overflow-hidden p-8 sm:p-12 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-2xl space-y-6">
         {/* Glow accent */}
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left relative z-10">
           {/* Real Avatar / Profile Photo */}
-          <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-pink-500 p-1 shadow-2xl shadow-indigo-500/30 shrink-0 group hover:scale-105 transition-transform duration-300">
-            <div className="w-full h-full bg-slate-950 rounded-[22px] overflow-hidden flex items-center justify-center">
+          <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-pink-500 p-1 shadow-2xl shadow-indigo-500/30 shrink-0 group hover:scale-105 transition-transform duration-300">
+            <div className="w-full h-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/saad-profile.jpg"
@@ -117,7 +117,7 @@ export const AboutCreator: React.FC = () => {
                 href={portfolioUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-indigo-500/25 flex items-center gap-2 transition active:scale-95 cursor-pointer"
+                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-indigo-500/25 flex items-center gap-2 transition active:scale-95 cursor-pointer"
               >
                 <Globe className="w-4 h-4" />
                 <span>পোর্টফোলিও ভিজিট করুন (Portfolio)</span>
@@ -126,7 +126,7 @@ export const AboutCreator: React.FC = () => {
 
               <button
                 onClick={handleCopyEmail}
-                className="px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-semibold border border-slate-200 dark:border-slate-700 flex items-center gap-2 transition active:scale-95 cursor-pointer"
+                className="px-4 py-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-semibold border border-slate-200 dark:border-slate-700 flex items-center gap-2 transition active:scale-95 cursor-pointer"
               >
                 {copiedEmail ? <Check className="w-4 h-4 text-emerald-500" /> : <Mail className="w-4 h-4 text-indigo-500" />}
                 <span>{copiedEmail ? 'ইমেইল কপি হয়েছে!' : email}</span>
@@ -137,9 +137,9 @@ export const AboutCreator: React.FC = () => {
       </div>
 
       {/* About The Platform Section */}
-      <div className="p-8 sm:p-10 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
+      <div className="p-8 sm:p-10 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6">
         <div className="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
             <Heart className="w-5 h-5 text-pink-500 fill-pink-500/20" />
           </div>
           <div>
@@ -184,7 +184,7 @@ export const AboutCreator: React.FC = () => {
       </div>
 
       {/* Contact & Portfolio Direct Card */}
-      <div className="p-8 rounded-3xl bg-gradient-to-br from-indigo-900/40 via-slate-900/60 to-purple-900/40 border border-indigo-500/30 text-center space-y-4 shadow-xl">
+      <div className="p-8 rounded-xl bg-gradient-to-br from-indigo-900/40 via-slate-900/60 to-purple-900/40 border border-indigo-500/30 text-center space-y-4 shadow-xl">
         <h3 className="text-xl font-bold text-white">
           যোগাযোগ ও আরও প্রজেক্ট দেখতে চান?
         </h3>
@@ -196,7 +196,7 @@ export const AboutCreator: React.FC = () => {
             href={portfolioUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-xl transition active:scale-95"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-xl transition active:scale-95"
           >
             <Globe className="w-4 h-4 text-indigo-600" />
             <span>https://saad-portfolio-eta-three.vercel.app/</span>

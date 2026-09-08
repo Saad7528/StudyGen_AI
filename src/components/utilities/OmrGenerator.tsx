@@ -97,17 +97,17 @@ export const OmrGenerator: React.FC = () => {
   const columns = getColumns();
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 shadow-md">
-            <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
-              <FileSpreadsheet className="w-6 h-6 text-indigo-500" />
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 shadow-xs">
+            <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[10px] flex items-center justify-center">
+              <FileSpreadsheet className="w-5 h-5 text-indigo-500" />
             </div>
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
               OMR Sheet Generator & Printable Bubble Sheets
               <span className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-bold">
                 A4 রেডি
@@ -123,7 +123,7 @@ export const OmrGenerator: React.FC = () => {
           <button
             type="button"
             onClick={handleFillDemo}
-            className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition"
+            className="h-9 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
             title="নমুনা উত্তর বাবল ভরাট করুন"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-500" /> ডেমো ফিল
@@ -131,14 +131,14 @@ export const OmrGenerator: React.FC = () => {
           <button
             type="button"
             onClick={resetMarks}
-            className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition"
+            className="h-9 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" /> রিসেট
           </button>
           <button
             type="button"
             onClick={handlePrint}
-            className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-500/20 flex items-center gap-1.5 transition"
+            className="h-9 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-500/20 flex items-center gap-1.5 transition cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5" /> প্রিন্ট / PDF ডাউনলোড
           </button>
@@ -147,13 +147,13 @@ export const OmrGenerator: React.FC = () => {
 
 
       {/* Configuration Controls */}
-      <div className="p-5 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-md space-y-4">
+      <div className="p-4 sm:p-5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xs space-y-3.5">
         <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white">
           <Settings2 className="w-4 h-4 text-indigo-500" />
           <span>ওএমআর শিট কনফিগারেশন</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
           <div>
             <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
               প্রতিষ্ঠানের নাম
@@ -162,7 +162,7 @@ export const OmrGenerator: React.FC = () => {
               type="text"
               value={config.institutionName}
               onChange={(e) => setConfig({ ...config, institutionName: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+              className="w-full h-9 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
             />
           </div>
 
@@ -174,7 +174,7 @@ export const OmrGenerator: React.FC = () => {
               type="text"
               value={config.examTitle}
               onChange={(e) => setConfig({ ...config, examTitle: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
+              className="w-full h-9 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
             />
           </div>
 
@@ -185,7 +185,7 @@ export const OmrGenerator: React.FC = () => {
             <select
               value={config.totalQuestions}
               onChange={(e) => setConfig({ ...config, totalQuestions: Number(e.target.value) })}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-bold"
+              className="w-full h-9 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-bold cursor-pointer"
             >
               <option value={20}>২০ টি প্রশ্ন</option>
               <option value={25}>২৫ টি প্রশ্ন (HSC/SSC স্টাইল)</option>
@@ -202,7 +202,7 @@ export const OmrGenerator: React.FC = () => {
             <select
               value={config.optionType}
               onChange={(e) => setConfig({ ...config, optionType: e.target.value as any })}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-bold"
+              className="w-full h-9 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-bold cursor-pointer"
             >
               <option value="bangla">বাংলা (ক, খ, গ, ঘ)</option>
               <option value="english">English (A, B, C, D)</option>

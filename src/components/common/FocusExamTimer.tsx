@@ -279,7 +279,7 @@ export const FocusExamTimer: React.FC<FocusExamTimerProps> = ({
 
   return (
     <div className="fixed bottom-6 right-6 z-50 w-80 sm:w-88 animate-fade-in">
-      <div className="rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-5 overflow-hidden relative">
+      <div className="rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-5 overflow-hidden relative">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-2xl pointer-events-none" />
 
         {/* Header */}

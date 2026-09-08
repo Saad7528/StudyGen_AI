@@ -265,7 +265,7 @@ export const GamifiedPlayArena: React.FC<GamifiedPlayArenaProps> = ({
     <div className="w-full max-w-3xl mx-auto space-y-5 animate-fade-in pb-12">
       
       {/* Top Game HUD Bar */}
-      <div className="p-4 rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-3">
+      <div className="p-4 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-3">
         <div className="flex items-center justify-between">
           
           {/* Question counter & subject badge */}
@@ -343,7 +343,7 @@ export const GamifiedPlayArena: React.FC<GamifiedPlayArenaProps> = ({
       </div>
 
       {/* Main Question Card Arena */}
-      <div className="rounded-3xl p-6 sm:p-8 bg-white/95 dark:bg-slate-900/95 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6 relative overflow-hidden">
+      <div className="rounded-xl p-6 sm:p-8 bg-white/95 dark:bg-slate-900/95 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-6 relative overflow-hidden">
         
         {/* Glow ambient background */}
         <div className="absolute -top-16 -right-16 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />

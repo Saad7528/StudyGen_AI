@@ -79,23 +79,23 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-fade-in">
-      <div className="w-full max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6">
+      <div className="w-full max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-2xl relative space-y-5">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-pink-600 p-0.5 shadow-lg shadow-indigo-500/20">
-            <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center">
-              <FileText className="w-6 h-6 text-indigo-500" />
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-600 p-0.5 shadow-md shadow-indigo-500/20">
+            <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[10px] flex items-center justify-center">
+              <FileText className="w-5 h-5 text-indigo-500" />
             </div>
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
               প্রশ্নপত্র ডাউনলোড ও এক্সপোর্ট
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -114,18 +114,18 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
               type="text"
               value={filename}
               onChange={(e) => setFilename(e.target.value)}
-              className="flex-1 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 h-10 px-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
             />
             <span className="text-xs font-bold text-slate-400">.docx</span>
           </div>
         </div>
 
         {/* Main Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <button
             onClick={handleDownloadDocx}
             disabled={isExporting}
-            className="w-full py-3 px-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white font-bold text-xs shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-1.5 transition"
+            className="w-full h-11 px-3 rounded-lg bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white font-bold text-xs shadow-md shadow-indigo-500/25 flex items-center justify-center gap-1.5 transition cursor-pointer"
           >
             {isExporting ? <Sparkles className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             {isExporting ? 'তৈরি হচ্ছে...' : 'ডাউনলোড .docx'}
@@ -133,7 +133,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
 
           <button
             onClick={handlePrintPdf}
-            className="w-full py-3 px-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-bold text-xs shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-1.5 transition"
+            className="w-full h-11 px-3 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-bold text-xs shadow-md shadow-emerald-500/25 flex items-center justify-center gap-1.5 transition cursor-pointer"
           >
             <Download className="w-4 h-4" />
             PDF / প্রিন্ট
@@ -141,7 +141,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
 
           <button
             onClick={handleCopyFormattedText}
-            className="w-full py-3 px-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 transition"
+            className="w-full h-11 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 transition cursor-pointer"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
             {copied ? 'কপি হয়েছে!' : 'টেক্সট কপি'}
@@ -149,7 +149,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
         </div>
 
         {/* Step-by-Step Google Docs Guide */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-indigo-500/5 dark:bg-indigo-950/40 border border-indigo-500/20 space-y-3">
+        <div className="p-4 rounded-xl bg-indigo-500/5 dark:bg-indigo-950/40 border border-indigo-500/20 space-y-2.5">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-500" />
@@ -165,7 +165,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data 
             </a>
           </div>
 
-          <ol className="text-xs text-slate-600 dark:text-slate-300 space-y-2 list-decimal list-inside leading-relaxed">
+          <ol className="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-decimal list-inside leading-relaxed">
             <li>
               উপরের <strong>ডাউনলোড .docx ফাইল</strong> বাটনে ক্লিক করে ফাইলটি সেভ করুন।
             </li>

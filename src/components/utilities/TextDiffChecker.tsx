@@ -215,9 +215,9 @@ ${textB}
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header Banner */}
-      <div className="p-5 sm:p-7 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div className="p-5 sm:p-7 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5 sm:gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0 border border-white/20">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0 border border-white/20">
             <Columns2 className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -263,7 +263,7 @@ ${textB}
       {/* Two Text Inputs Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Original Text A */}
-        <div className="p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-3">
+        <div className="p-5 sm:p-6 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-rose-500" />
@@ -326,7 +326,7 @@ ${textB}
         </div>
 
         {/* Right: Modified Text B */}
-        <div className="p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-3">
+        <div className="p-5 sm:p-6 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-lg space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-emerald-500" />
@@ -460,7 +460,7 @@ ${textB}
       </div>
 
       {/* Difference Output Viewer & Contextual Controls */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
         {/* Top Header of Diff Output Viewer with Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
@@ -883,7 +883,7 @@ ${textB}
 
 
       {/* Comprehensive Side-by-Side Statistics Comparison Table */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
         <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Layers className="w-5 h-5 text-indigo-500" />
           উভয় টেক্সটের তুলনামূলক পরিসংখ্যান (Comparative Analysis)

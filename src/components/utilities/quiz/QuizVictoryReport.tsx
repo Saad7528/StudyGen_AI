@@ -90,13 +90,13 @@ export const QuizVictoryReport: React.FC<QuizVictoryReportProps> = ({
     <div className="w-full max-w-3xl mx-auto space-y-6 animate-fade-in pb-12">
       
       {/* Victory Trophy & Score Hero Banner */}
-      <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white/90 via-white/70 to-indigo-50/60 dark:from-slate-900/90 dark:via-slate-900/60 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-2xl overflow-hidden text-center">
+      <div className="relative rounded-2xl p-6 sm:p-8 bg-gradient-to-b from-white/90 via-white/70 to-indigo-50/60 dark:from-slate-900/90 dark:via-slate-900/60 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-2xl overflow-hidden text-center">
         
         {/* Glow ambient */}
         <div className="absolute top-0 right-1/4 w-80 h-80 bg-indigo-500/15 dark:bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
 
         {/* Trophy Icon */}
-        <div className={`relative mx-auto w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr ${rank.color} text-white flex items-center justify-center shadow-xl mb-4 animate-float-slow ring-4 ${rank.ring}`}>
+        <div className={`relative mx-auto w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr ${rank.color} text-white flex items-center justify-center shadow-xl mb-4 animate-float-slow ring-4 ${rank.ring}`}>
           <Trophy className="w-10 h-10 sm:w-12 sm:h-12" />
         </div>
 
@@ -211,7 +211,7 @@ export const QuizVictoryReport: React.FC<QuizVictoryReportProps> = ({
       </div>
 
       {/* Expandable Answers & Explanations Review */}
-      <div className="rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-lg p-5 space-y-4">
+      <div className="rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 backdrop-blur-xl shadow-lg p-5 space-y-4">
         <div 
           onClick={() => setShowReview(!showReview)}
           className="flex items-center justify-between cursor-pointer"

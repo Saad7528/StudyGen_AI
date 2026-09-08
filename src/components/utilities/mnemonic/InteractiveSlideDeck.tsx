@@ -91,7 +91,7 @@ export const InteractiveSlideDeck: React.FC<InteractiveSlideDeckProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col rounded-3xl bg-slate-900 text-white overflow-hidden border border-slate-800 shadow-2xl transition-all ${
+      className={`relative flex flex-col rounded-2xl bg-slate-900 text-white overflow-hidden border border-slate-800 shadow-2xl transition-all ${
         isFullscreen ? 'fixed inset-0 z-50 rounded-none h-screen w-screen' : 'min-h-[640px]'
       }`}
     >
@@ -138,7 +138,7 @@ export const InteractiveSlideDeck: React.FC<InteractiveSlideDeckProps> = ({
       <div className="flex-1 p-6 sm:p-10 flex flex-col justify-between overflow-y-auto">
         <div className="max-w-4xl mx-auto w-full space-y-6">
           {/* Question Banner */}
-          <div className="p-6 rounded-3xl bg-slate-800/80 border border-slate-700 shadow-lg backdrop-blur-sm text-center">
+          <div className="p-6 rounded-xl bg-slate-800/80 border border-slate-700 shadow-lg backdrop-blur-sm text-center">
             <span className="inline-block px-3 py-1 rounded-full bg-indigo-600/30 text-indigo-300 text-xs font-bold uppercase tracking-wider mb-2">
               পরীক্ষার প্রশ্ন
             </span>
@@ -149,8 +149,8 @@ export const InteractiveSlideDeck: React.FC<InteractiveSlideDeckProps> = ({
 
           {/* Active Recall Stage: Hidden Answer or Revealed */}
           {revealStep === 'question_only' ? (
-            <div className="p-8 rounded-3xl bg-slate-950/60 border-2 border-dashed border-slate-700 text-center flex flex-col items-center justify-center space-y-4 py-16 animate-fade-in">
-              <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <div className="p-8 rounded-xl bg-slate-950/60 border-2 border-dashed border-slate-700 text-center flex flex-col items-center justify-center space-y-4 py-16 animate-fade-in">
+              <div className="w-16 h-16 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
                 <HelpCircle className="w-8 h-8 animate-bounce" />
               </div>
               <div>
@@ -163,7 +163,7 @@ export const InteractiveSlideDeck: React.FC<InteractiveSlideDeckProps> = ({
               </div>
               <button
                 onClick={() => setRevealStep('revealed')}
-                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg hover:shadow-indigo-500/25 transition-all transform hover:scale-105 cursor-pointer"
+                className="px-6 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg hover:shadow-indigo-500/25 transition-all transform hover:scale-105 cursor-pointer"
               >
                 ✨ ছন্দ ও ম্যাজিক সূত্র দেখুন
               </button>
@@ -171,7 +171,7 @@ export const InteractiveSlideDeck: React.FC<InteractiveSlideDeckProps> = ({
           ) : (
             <div className="space-y-6 animate-fade-in">
               {/* Correct Answer & Highlighted Formula */}
-              <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-500/15 via-purple-500/10 to-indigo-500/15 border-2 border-amber-400/40 shadow-xl">
+              <div className="p-6 rounded-xl bg-gradient-to-br from-amber-500/15 via-purple-500/10 to-indigo-500/15 border-2 border-amber-400/40 shadow-xl">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-amber-400" />

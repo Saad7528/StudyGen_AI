@@ -141,9 +141,9 @@ export const GrammarChecker: React.FC<GrammarCheckerProps> = ({
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
             <SpellCheck className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -181,7 +181,7 @@ export const GrammarChecker: React.FC<GrammarCheckerProps> = ({
       </div>
 
       {/* Main Input Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
+      <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <label className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-indigo-500" /> আপনার টেক্সট ইনপুট দিন:
@@ -294,7 +294,7 @@ export const GrammarChecker: React.FC<GrammarCheckerProps> = ({
           )}
 
           {/* Super Action Bar: 1-Click Fix All & Diff Bridge */}
-          <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-indigo-500/15 border border-emerald-500/30 backdrop-blur-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="p-5 sm:p-6 rounded-xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-indigo-500/15 border border-emerald-500/30 backdrop-blur-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
                 <Zap className="w-5 h-5 text-emerald-500" />
@@ -326,7 +326,7 @@ export const GrammarChecker: React.FC<GrammarCheckerProps> = ({
           </div>
 
           {/* Issues List & Individual Correction */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
+          <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 শনাক্তকৃত ত্রুটি ও পরামর্শসমূহ ({visibleIssues.length} টি বাকি)
@@ -439,7 +439,7 @@ export const GrammarChecker: React.FC<GrammarCheckerProps> = ({
           </div>
 
           {/* Corrected Text Full View */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-3">
+          <div className="p-6 sm:p-8 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-xl shadow-xl space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500" /> সম্পূর্ণ সংশোধিত টেক্সট (Polished Version)
