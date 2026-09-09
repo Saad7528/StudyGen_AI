@@ -250,17 +250,14 @@ export default function HomePage() {
            ========================================== */}
         {activeTab === 'question-paper' && (
           <div className="space-y-12 animate-fade-in">
-            {/* Hero Split Section: Dual Column & Bento Cards */}
+            {/* 1. Hero Split Section */}
             <HeroSplitSection
               onSelectTab={setActiveTab}
               onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
             />
 
-            {/* Live 3-Step Workflow Showcase */}
-            <LiveWorkflowShowcase />
-
-            {/* Step 1: Photo Uploader Workspace */}
-            <div className="space-y-4 pt-2">
+            {/* 2. Direct Actionable Workspace: Photo Uploader */}
+            <div className="space-y-4 pt-1">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -278,8 +275,8 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Step 2: Paper Workspace (Single Unified Toolbar & Views) */}
-            <div className="space-y-6 pt-2">
+            {/* 3. Paper Workspace (Single Unified Toolbar & Views) */}
+            <div className="space-y-6 pt-1">
               {paperViewMode === 'preview' ? (
                 <PaperPreview
                   data={paperData}
@@ -332,7 +329,10 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* All-in-One Bento Grid Hub (Showcasing all 11+ Tools) */}
+            {/* 4. Interactive Live Workflow Showcase */}
+            <LiveWorkflowShowcase />
+
+            {/* 5. All-in-One Bento Grid Hub (Showcasing all 11+ Tools) */}
             <ToolsBentoGrid onSelectTab={setActiveTab} />
           </div>
         )}

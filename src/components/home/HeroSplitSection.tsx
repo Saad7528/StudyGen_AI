@@ -123,8 +123,8 @@ export const HeroSplitSection: React.FC<HeroSplitSectionProps> = ({
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Modern Vector Student & Docs Artwork (40%) */}
-        <div className="lg:col-span-5 relative flex items-center justify-center">
+        {/* RIGHT COLUMN: Modern Vector Student & Docs Artwork (Visible on Desktop lg+) */}
+        <div className="hidden lg:flex lg:col-span-5 relative items-center justify-center">
           
           {/* Background Ambient Glow */}
           <div className="absolute w-72 h-72 sm:w-80 sm:h-80 bg-gradient-to-tr from-indigo-500/15 via-purple-500/15 to-pink-500/15 rounded-full blur-2xl -z-10" />
@@ -215,9 +215,9 @@ export const HeroSplitSection: React.FC<HeroSplitSectionProps> = ({
       </div>
 
       {/* =========================================================================
-          BOTTOM 4 QUICK FEATURE CARDS (BENTO STYLE - Standardized Radii & Spacing)
+          BOTTOM 4 QUICK FEATURE CARDS (Visible on Desktop lg+ to avoid duplicate mobile cards)
          ========================================================================= */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2">
+      <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2">
         
         {/* Card 1: প্রশ্নপত্র তৈরি */}
         <div 
