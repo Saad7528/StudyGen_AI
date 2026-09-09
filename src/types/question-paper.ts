@@ -60,3 +60,10 @@ export interface QuestionPaperData {
   fontSize: number; // e.g. 11 or 12
 }
 
+
+export type QuestionDifficulty = 'easy' | 'medium' | 'hard';
+export interface QuestionTagMetadata {
+  subject?: string;
+  chapter?: string;
+  difficulty?: QuestionDifficulty;
+}
