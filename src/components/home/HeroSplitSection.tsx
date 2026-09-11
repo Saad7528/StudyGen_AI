@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   Heart
 } from 'lucide-react';
+import { DigitalStudyWorkstationScene } from '@/components/home/DigitalStudyWorkstationScene';
 
 interface HeroSplitSectionProps {
   onSelectTab: (tabId: string) => void;
@@ -123,94 +124,9 @@ export const HeroSplitSection: React.FC<HeroSplitSectionProps> = ({
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Modern Vector Student & Docs Artwork (Visible on Desktop lg+) */}
+        {/* RIGHT COLUMN: IconScout Style Digital Study Workstation Animated Scene (Visible on Desktop lg+) */}
         <div className="hidden lg:flex lg:col-span-5 relative items-center justify-center">
-          
-          {/* Background Ambient Glow */}
-          <div className="absolute w-72 h-72 sm:w-80 sm:h-80 bg-gradient-to-tr from-indigo-500/15 via-purple-500/15 to-pink-500/15 rounded-full blur-2xl -z-10" />
-
-          {/* Interactive Illustration Composition */}
-          <div className="relative w-full max-w-[400px] aspect-square rounded-2xl bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 dark:from-slate-900/70 dark:to-slate-950/70 border border-slate-200/80 dark:border-slate-800/80 p-5 flex flex-col items-center justify-center overflow-visible shadow-xl backdrop-blur-md">
-            
-            {/* Curved Friendly Slogan Badge */}
-            <div className="absolute -top-3 -right-2 px-3.5 py-1 rounded-full bg-slate-900 text-pink-400 border border-pink-500/30 text-xs font-bold shadow-lg flex items-center gap-1.5 transform rotate-2">
-              <span>পড়াশোনা হোক আরও সহজ</span>
-              <span>✨</span>
-            </div>
-
-            {/* Floating Google Docs Icon Card */}
-            <div className="absolute top-5 left-3 sm:-left-3 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-800 shadow-lg flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-blue-500 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                <FileText className="w-3.5 h-3.5" />
-              </div>
-              <div className="text-left">
-                <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
-                  <span>Question.docx</span>
-                  <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                </div>
-                <div className="text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold">
-                  ১০০% এডিটেবল
-                </div>
-              </div>
-            </div>
-
-            {/* Floating Image Preview Badge */}
-            <div className="absolute bottom-6 -left-1 sm:-left-3 p-2 rounded-xl bg-white dark:bg-slate-800 border border-purple-200 dark:border-purple-800 shadow-lg flex items-center gap-1.5">
-              <div className="w-6 h-6 rounded-md bg-pink-500/15 text-pink-500 flex items-center justify-center">
-                <ImageIcon className="w-3 h-3" />
-              </div>
-              <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300">
-                খাতার ছবি OCR
-              </span>
-            </div>
-
-            {/* Main Central Character & Study Scene (SVG Art) */}
-            <div className="w-52 h-52 sm:w-60 sm:h-60 relative flex items-center justify-center">
-              <svg viewBox="0 0 300 300" className="w-full h-full drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Back Screen / Laptop Glow */}
-                <rect x="75" y="70" width="150" height="100" rx="10" fill="#3B82F6" fillOpacity="0.15" stroke="#6366F1" strokeWidth="2" />
-                <rect x="90" y="85" width="120" height="70" rx="6" fill="#1E1B4B" />
-                <path d="M100 100H140M100 115H170M100 130H150" stroke="#818CF8" strokeWidth="2.5" strokeLinecap="round" />
-                <circle cx="180" cy="115" r="12" fill="#10B981" fillOpacity="0.2" stroke="#10B981" strokeWidth="1.5" />
-                <path d="M176 115L179 118L185 112" stroke="#10B981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-
-                {/* Laptop Base */}
-                <path d="M60 170H240L230 185H70L60 170Z" fill="#334155" />
-                <rect x="135" y="173" width="30" height="3" rx="1.5" fill="#94A3B8" />
-
-                {/* Character Body (Girl with Purple Hoodie) */}
-                <path d="M110 270C110 220 190 220 190 270" fill="#7C3AED" />
-                
-                {/* Hoodie Neck & Collar */}
-                <path d="M135 210L150 230L165 210H135Z" fill="#6D28D9" />
-
-                {/* Head / Face */}
-                <ellipse cx="150" cy="190" rx="22" ry="24" fill="#FCD34D" />
-                {/* Hair */}
-                <path d="M125 185C125 160 175 160 175 185C175 190 170 170 150 170C130 170 125 190 125 185Z" fill="#1E293B" />
-                <path d="M125 185C120 205 125 220 130 225C132 215 130 200 135 195" fill="#1E293B" />
-                <path d="M175 185C180 205 175 220 170 225C168 215 170 200 165 195" fill="#1E293B" />
-
-                {/* Eyes & Friendly Smile */}
-                <circle cx="143" cy="190" r="2" fill="#0F172A" />
-                <circle cx="157" cy="190" r="2" fill="#0F172A" />
-                <path d="M146 199C148 202 152 202 154 199" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round" />
-
-                {/* Hands typing on keyboard */}
-                <ellipse cx="120" cy="245" rx="8" ry="5" fill="#FCD34D" transform="rotate(-15 120 245)" />
-                <ellipse cx="180" cy="245" rx="8" ry="5" fill="#FCD34D" transform="rotate(15 180 245)" />
-
-                {/* Potted Plant (Left) */}
-                <path d="M50 240H70L65 265H55L50 240Z" fill="#D97706" />
-                <path d="M60 240C50 220 40 225 60 215C80 225 70 220 60 240Z" fill="#10B981" />
-
-                {/* Books Stack (Right) */}
-                <rect x="230" y="255" width="45" height="9" rx="1.5" fill="#EC4899" />
-                <rect x="233" y="244" width="40" height="9" rx="1.5" fill="#3B82F6" />
-                <rect x="235" y="233" width="36" height="9" rx="1.5" fill="#F59E0B" />
-              </svg>
-            </div>
-          </div>
+          <DigitalStudyWorkstationScene />
         </div>
       </div>
 
