@@ -54,44 +54,64 @@ export async function POST(req: NextRequest) {
       process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
       '';
 
-    const models = ['gemini-3.6-flash', 'gemini-flash-latest'];
+    const models = [
+      'gemini-flash-lite-latest',
+      'gemini-3.5-flash-lite',
+      'gemini-3.1-flash-lite',
+      'gemini-flash-latest',
+      'gemini-3.5-flash',
+      'gemini-3.8-flash'
+    ];
     let lastErr = '';
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     for (const model of models) {
-      try {
-        const geminiRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  parts: [
-                    { text: GRAMMAR_SYSTEM_PROMPT },
-                    { text: `Analyze and correct this text:\n\n${text}` }
-                  ]
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const geminiRes = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            {
+              signal: AbortSignal.timeout(20000),
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [
+                      { text: GRAMMAR_SYSTEM_PROMPT },
+                      { text: `Analyze and correct this text:\n\n${text}` }
+                    ]
+                  }
+                ],
+                generationConfig: {
+                  temperature: 0.1,
+                  responseMimeType: 'application/json'
                 }
-              ],
-              generationConfig: {
-                temperature: 0.1,
-                responseMimeType: 'application/json'
-              }
-            })
-          }
-        );
+              })
+            }
+          );
 
-        if (geminiRes.ok) {
-          const data = await geminiRes.json();
-          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-          const cleanJson = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
-          const parsed = JSON.parse(cleanJson);
-          return NextResponse.json({ success: true, data: parsed });
-        } else {
-          lastErr = await geminiRes.text();
+          if (geminiRes.ok) {
+            const data = await geminiRes.json();
+            const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+            const cleanJson = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+            const parsed = JSON.parse(cleanJson);
+            return NextResponse.json({ success: true, data: parsed });
+          } else {
+            const errText = await geminiRes.text();
+            lastErr = errText;
+
+            if (geminiRes.status === 404) {
+              break;
+            }
+            if (geminiRes.status === 503 || geminiRes.status === 429) {
+              await sleep(1000 * (attempt + 1));
+              continue;
+            }
+          }
+        } catch (err: unknown) {
+          lastErr = err instanceof Error ? err.message : 'API call error';
         }
-      } catch (err: unknown) {
-        lastErr = err instanceof Error ? err.message : 'API call error';
       }
     }
 
