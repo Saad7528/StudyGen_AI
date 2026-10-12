@@ -67,6 +67,47 @@ JSON Schema strictly required:
 Return ONLY the raw JSON object. Do not include markdown code block backticks.
 `;
 
+export const GEMINI_RELIABLE_MODELS = [
+  'gemini-flash-lite-latest',
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
+  'gemini-flash-latest',
+  'gemini-3.5-flash',
+  'gemini-3.8-flash'
+];
+
+export function formatGeminiErrorMessage(rawError: string): string {
+  if (!rawError) return 'এআই সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।';
+
+  const lower = rawError.toLowerCase();
+
+  if (rawError.includes('503') || rawError.includes('UNAVAILABLE') || lower.includes('high demand') || lower.includes('spikes in demand')) {
+    return 'গুগল জেমিনি সার্ভারে এই মুহূর্তে অতিরিক্ত ট্রাফিকের কারণে সাময়িক চাপ রয়েছে (Error 503: High Demand)। সিস্টেম ব্যাকআপ মডেলে চেষ্টা করেছিল। অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করে আবার চেষ্টা করুন।';
+  }
+  if (rawError.includes('429') || rawError.includes('RESOURCE_EXHAUSTED') || lower.includes('quota') || lower.includes('rate limit')) {
+    return 'এআই রিকোয়েস্ট লিমিট (Rate Limit / Quota) সাময়িকভাবে অতিক্রম করেছে। অনুগ্রহ করে ১ মিনিট অপেক্ষা করে আবার চেষ্টা করুন।';
+  }
+  if (rawError.includes('400') && (rawError.includes('API_KEY_INVALID') || lower.includes('api key not valid'))) {
+    return 'Gemini API Key সঠিক নয় অথবা মেয়াদ উত্তীর্ণ হয়েছে। অনুগ্রহ করে সেটিংস বা .env ফাইলে সঠিক API Key নিশ্চিত করুন।';
+  }
+  if (rawError.includes('404') || rawError.includes('NOT_FOUND')) {
+    return 'অনুরোধকৃত এআই মডেলটি পাওয়া যায়নি বা সাময়িকভাবে অনুপলব্ধ।';
+  }
+
+  try {
+    const parsed = JSON.parse(rawError);
+    if (parsed.error?.message) {
+      return `এআই সার্ভার রেসপন্স: ${parsed.error.message}`;
+    }
+  } catch {
+    // Keep original string if not json
+  }
+
+  return `এআই সার্ভার রেসপন্স: ${rawError}`;
+}
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function analyzeQuestionImages(
   imageBase64List: string[],
   userApiKey?: string
@@ -78,11 +119,13 @@ export async function analyzeQuestionImages(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ images: imageBase64List })
     });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.data && json.data.sections) {
-        return { success: true, data: json.data };
-      }
+    const json = await res.json();
+    if (res.ok && json.data && json.data.sections) {
+      return { success: true, data: json.data };
+    }
+    // If the server explicitly returned an error, capture it
+    if (json.error && !json.error.includes('No API key') && !json.error.includes('404')) {
+      // If server failed with 503/etc, we can try client direct call with full fallback models
     }
   } catch {
     // Fallback to direct client API call
@@ -94,6 +137,13 @@ export async function analyzeQuestionImages(
     process.env.GEMINI_API_KEY ||
     process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
     '';
+
+  if (!apiKey) {
+    return {
+      success: false,
+      error: 'কোনো Gemini API Key পাওয়া যায়নি। অনুগ্রহ করে .env ফাইলে GEMINI_API_KEY বা NEXT_PUBLIC_GEMINI_API_KEY যুক্ত করুন।'
+    };
+  }
 
   try {
     const formattedParts = imageBase64List.map((base64) => {
@@ -108,51 +158,66 @@ export async function analyzeQuestionImages(
       };
     });
 
-    const modelsToTry = ['gemini-3.6-flash', 'gemini-flash-latest'];
     let lastError = '';
 
-    for (const model of modelsToTry) {
-      try {
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  parts: [
-                    { text: SYSTEM_PROMPT },
-                    { text: 'Analyze and faithfully extract ALL handwritten and printed questions from these images without missing any items:' },
-                    ...formattedParts
-                  ]
+    for (const model of GEMINI_RELIABLE_MODELS) {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            {
+              signal: AbortSignal.timeout(20000),
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [
+                      { text: SYSTEM_PROMPT },
+                      { text: 'Analyze and faithfully extract ALL handwritten and printed questions from these images without missing any items:' },
+                      ...formattedParts
+                    ]
+                  }
+                ],
+                generationConfig: {
+                  temperature: 0.1,
+                  responseMimeType: 'application/json'
                 }
-              ],
-              generationConfig: {
-                temperature: 0.1,
-                responseMimeType: 'application/json'
-              }
-            })
-          }
-        );
+              })
+            }
+          );
 
-        if (response.ok) {
-          const resJson = await response.json();
-          const rawText = resJson?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          const cleanJson = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
-          const parsedData: QuestionPaperData = JSON.parse(cleanJson);
-          return { success: true, data: parsedData };
-        } else {
-          lastError = await response.text();
+          if (response.ok) {
+            const resJson = await response.json();
+            const rawText = resJson?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            const cleanJson = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+            const parsedData: QuestionPaperData = JSON.parse(cleanJson);
+            return { success: true, data: parsedData };
+          } else {
+            const errText = await response.text();
+            lastError = errText;
+
+            // If model not found (404), do not retry this model, skip immediately to next model
+            if (response.status === 404) {
+              break;
+            }
+
+            // If 503 high demand or 429 quota spike, pause briefly before retrying or switching
+            if (response.status === 503 || response.status === 429) {
+              await sleep(1000 * (attempt + 1));
+              continue;
+            }
+          }
+        } catch (err: unknown) {
+          lastError = err instanceof Error ? err.message : 'Request failed';
         }
-      } catch (err: unknown) {
-        lastError = err instanceof Error ? err.message : 'Request failed';
       }
     }
 
-    return { success: false, error: `এআই সার্ভার রেসপন্স: ${lastError}` };
+    return { success: false, error: formatGeminiErrorMessage(lastError) };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown parsing error';
     return { success: false, error: `ছবি প্রসেস করতে ব্যর্থ হয়েছে: ${message}` };
   }
 }
+
