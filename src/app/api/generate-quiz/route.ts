@@ -48,7 +48,15 @@ export async function POST(req: NextRequest) {
       '';
 
     if (apiKey) {
-      const models = ['gemini-3.6-flash', 'gemini-flash-latest'];
+      const models = [
+        'gemini-flash-lite-latest',
+        'gemini-3.5-flash-lite',
+        'gemini-3.1-flash-lite',
+        'gemini-flash-latest',
+        'gemini-3.5-flash',
+        'gemini-3.8-flash'
+      ];
+      const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
       const formattedParts: any[] = [];
 
       let promptText = SYSTEM_PROMPT + `\nInput Mode: ${inputMode || 'auto'}\n`;
@@ -70,40 +78,51 @@ export async function POST(req: NextRequest) {
       }
 
       for (const model of models) {
-        try {
-          const res = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    parts: formattedParts
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try {
+            const res = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+              {
+                signal: AbortSignal.timeout(20000),
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [
+                    {
+                      parts: formattedParts
+                    }
+                  ],
+                  generationConfig: {
+                    temperature: 0.2,
+                    maxOutputTokens: 4096,
+                    responseMimeType: 'application/json'
                   }
-                ],
-                generationConfig: {
-                  temperature: 0.2,
-                  maxOutputTokens: 4096,
-                  responseMimeType: 'application/json'
-                }
-              })
-            }
-          );
+                })
+              }
+            );
 
-          if (res.ok) {
-            const data = await res.json();
-            const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (candidate) {
-              const cleanJson = candidate.replace(/```json/g, '').replace(/```/g, '').trim();
-              const parsed = JSON.parse(cleanJson);
-              if (parsed.questions && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
-                return NextResponse.json(parsed);
+            if (res.ok) {
+              const data = await res.json();
+              const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (candidate) {
+                const cleanJson = candidate.replace(/```json/g, '').replace(/```/g, '').trim();
+                const parsed = JSON.parse(cleanJson);
+                if (parsed.questions && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+                  return NextResponse.json(parsed);
+                }
+              }
+            } else {
+              if (res.status === 404) {
+                break;
+              }
+              if (res.status === 503 || res.status === 429) {
+                await sleep(1000 * (attempt + 1));
+                continue;
               }
             }
+          } catch (modelErr) {
+            console.warn(`Model ${model} error in quiz generator:`, modelErr);
           }
-        } catch (modelErr) {
-          console.warn(`Model ${model} error in quiz generator:`, modelErr);
         }
       }
     }
