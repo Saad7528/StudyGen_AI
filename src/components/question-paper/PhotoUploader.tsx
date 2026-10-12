@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { UploadCloud, Camera, Image as ImageIcon, Sparkles, Trash2, Zap, AlertCircle } from 'lucide-react';
+import { UploadCloud, Camera, Image as ImageIcon, Sparkles, Trash2, Zap, AlertCircle, RefreshCw } from 'lucide-react';
 import { QuestionPaperData } from '../../types/question-paper';
 import { SAMPLE_EXAM_PAPERS } from '../../lib/sample-data';
 import { analyzeQuestionImages } from '../../lib/gemini-api';
@@ -12,6 +12,43 @@ interface PhotoUploaderProps {
   isProcessing: boolean;
   setIsProcessing: (val: boolean) => void;
 }
+
+// Client-side image compressor: scales images down to max 1400px so Gemini receives sharp text with 15x smaller payload
+const compressImageFile = (file: File, maxDim = 1400, quality = 0.80): Promise<string> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const src = e.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } else {
+          resolve(src);
+        }
+      };
+      img.onerror = () => resolve(src);
+      img.src = src;
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+};
 
 export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   onPaperGenerated,
@@ -24,24 +61,22 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFiles = (files: FileList | null) => {
+  const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     setErrorMessage(null);
 
-    Array.from(files).forEach((file) => {
-      if (!file.type.startsWith('image/')) {
-        setErrorMessage('অনুগ্রহ করে শুধুমাত্র ছবি ফাইল (JPG, PNG, WEBP) আপলোড করুন।');
-        return;
-      }
+    const validFiles = Array.from(files).filter((file) => file.type.startsWith('image/'));
+    if (validFiles.length === 0) {
+      setErrorMessage('অনুগ্রহ করে শুধুমাত্র ছবি ফাইল (JPG, PNG, WEBP) আপলোড করুন।');
+      return;
+    }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          setImages((prev) => [...prev, e.target!.result as string]);
-        }
-      };
-      reader.readAsDataURL(file);
-    });
+    for (const file of validFiles) {
+      const compressedDataUrl = await compressImageFile(file);
+      if (compressedDataUrl) {
+        setImages((prev) => [...prev, compressedDataUrl]);
+      }
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -188,14 +223,17 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
           </div>
 
           {/* Process Button */}
-          <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+          <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <span className="text-xs text-slate-500 dark:text-slate-400">
+              {isProcessing ? '⚡ দ্রুততম আল্ট্রা-লাইট এআই দিয়ে প্রশ্নপত্র তৈরি হচ্ছে...' : 'মোট ' + images.length + 'টি পৃষ্ঠা নির্বাচিত'}
+            </span>
             <button
               onClick={handleAnalyze}
               disabled={isProcessing}
               className="w-full sm:w-auto h-11 px-6 rounded-lg bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white font-bold text-sm shadow-md shadow-indigo-500/25 flex items-center justify-center gap-2 transition disabled:opacity-50 cursor-pointer"
             >
-              <Sparkles className="w-4 h-4 animate-spin" />
-              {isProcessing ? 'এআই ছবি বিশ্লেষণ করছে...' : 'প্রশ্নপত্র তৈরি শুরু করুন (AI Generate)'}
+              <Sparkles className={`w-4 h-4 ${isProcessing ? 'animate-spin' : ''}`} />
+              {isProcessing ? 'এআই দ্রুত বিশ্লেষণ করছে...' : 'প্রশ্নপত্র তৈরি শুরু করুন (AI Generate)'}
             </button>
           </div>
         </div>
@@ -203,11 +241,23 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
       {/* Error Message */}
       {errorMessage && (
-        <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs sm:text-sm flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="font-semibold">মনোযোগ দিন:</p>
-            <p>{errorMessage}</p>
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs sm:text-sm flex items-start gap-3 shadow-sm">
+          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-rose-500" />
+          <div className="flex-1 space-y-2">
+            <div>
+              <p className="font-bold text-rose-700 dark:text-rose-300">মনোযোগ দিন:</p>
+              <p className="mt-0.5 leading-relaxed text-slate-800 dark:text-slate-200">{errorMessage}</p>
+            </div>
+            {images.length > 0 && (
+              <button
+                onClick={handleAnalyze}
+                disabled={isProcessing}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-semibold text-xs transition cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isProcessing ? 'animate-spin' : ''}`} />
+                {isProcessing ? 'পুনরায় চেষ্টা করা হচ্ছে...' : 'আবার চেষ্টা করুন (Retry)'}
+              </button>
+            )}
           </div>
         </div>
       )}
