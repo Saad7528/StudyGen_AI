@@ -215,7 +215,7 @@ export const MemoryTechniqueGenerator: React.FC = () => {
         });
 
         setMnemonicList((prev) => [...enrichedItems, ...prev]);
-        setModelUsed(json.modelUsed || 'gemini-3.6-flash');
+        setModelUsed(json.modelUsed || 'gemini-flash-lite-latest');
         
         // Confetti celebration
         confetti({
