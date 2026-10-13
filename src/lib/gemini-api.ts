@@ -221,3 +221,5 @@ export async function analyzeQuestionImages(
   }
 }
 
+
+// Architectural note: Model fallback cascades smoothly through flash-lite and flash-latest tiers.
