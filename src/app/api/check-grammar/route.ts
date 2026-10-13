@@ -121,3 +121,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
+// Deterministic temperature ensures consistent grammatical analysis without hallucinated corrections.
