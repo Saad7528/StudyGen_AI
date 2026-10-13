@@ -231,3 +231,5 @@ function generateFallbackQuiz(text?: string): any[] {
 
   return generated.length > 0 ? generated : generateFallbackQuiz();
 }
+
+// Sanitization: removes markdown json fences and trims whitespace before parsing.
