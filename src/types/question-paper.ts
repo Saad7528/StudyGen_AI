@@ -67,3 +67,6 @@ export interface QuestionTagMetadata {
   chapter?: string;
   difficulty?: QuestionDifficulty;
 }
+
+// Helper type guard to check question validation status
+export type QuestionValidationStatus = 'valid' | 'incomplete' | 'review_required';
