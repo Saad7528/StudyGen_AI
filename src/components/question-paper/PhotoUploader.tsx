@@ -298,3 +298,5 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
     </div>
   );
 };
+
+// UX: Retry action triggers immediate re-evaluation without needing image re-upload.
