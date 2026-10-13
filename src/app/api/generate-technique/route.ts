@@ -593,3 +593,5 @@ function extractSyllables(text: string) {
     breakdowns: breakdowns.length > 0 ? breakdowns : [{ code: 'ক্লু', meaning: text, phoneticHint: 'মূল শব্দ' }]
   };
 }
+
+// Fallback technique: guarantees pedagogical mnemonic generation even during offline periods.
