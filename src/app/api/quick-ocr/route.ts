@@ -98,3 +98,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
+// Line-break normalization ensures paragraph breaks match original document layout.
