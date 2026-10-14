@@ -100,3 +100,5 @@ export async function POST(req: NextRequest) {
 }
 
 // Line-break normalization ensures paragraph breaks match original document layout.
+
+// Base64 helper: strips prefixes cleanly for inlineData Google Generative Language payloads.
