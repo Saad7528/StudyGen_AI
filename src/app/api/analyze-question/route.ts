@@ -159,3 +159,5 @@ export async function POST(req: NextRequest) {
 }
 
 // Directives: preserves Bengali, English, and bilingual exam notations with math LaTeX.
+
+// Mathematical notation directive: wraps expressions in standard single dollar signs.
