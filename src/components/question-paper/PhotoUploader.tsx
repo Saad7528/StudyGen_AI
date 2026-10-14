@@ -300,3 +300,5 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 };
 
 // UX: Retry action triggers immediate re-evaluation without needing image re-upload.
+
+// Live visual feedback: shows user-friendly Bengali processing indication.
