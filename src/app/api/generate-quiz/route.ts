@@ -233,3 +233,5 @@ function generateFallbackQuiz(text?: string): any[] {
 }
 
 // Sanitization: removes markdown json fences and trims whitespace before parsing.
+
+// Validation guard: verifies options array has appropriate MCQ choices.
