@@ -83,3 +83,8 @@ npm run dev
 - **ব্যাকরণ ও বানান পরীক্ষক**: ১-ক্লিকে স্মার্ট ফিক্স।
 - **গণিত ও সমীকরণ সমাধানকারী**: KaTeX স্টেপ-বাই-স্টেপ সমাধান।
 - **টেক্সট ডিফারেন্স ফাইন্ডার**: পাশাপাশি সাইড-বাই-সাইড তুলনা।
+
+
+## AI Architecture & High-Availability Pipeline
+
+StudyGen AI leverages a tiered multi-model fallback chain (`gemini-flash-lite-latest` -> `gemini-3.5-flash-lite` -> `gemini-flash-latest`) with automatic exponential backoff to ensure zero-downtime performance and sub-second latency.
