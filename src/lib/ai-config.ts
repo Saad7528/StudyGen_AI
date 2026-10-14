@@ -18,3 +18,5 @@ export const AI_CONFIG = {
 export const STATUS_CODES = { UNAVAILABLE: 503, RATE_LIMIT: 429, BAD_REQUEST: 400 } as const;
 
 export const CANVAS_SETTINGS = { imageSmoothingEnabled: true, imageSmoothingQuality: 'high' } as const;
+
+export const REQUEST_TIMEOUT_SECONDS = 20;
