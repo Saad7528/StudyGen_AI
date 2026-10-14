@@ -223,3 +223,5 @@ export async function analyzeQuestionImages(
 
 
 // Architectural note: Model fallback cascades smoothly through flash-lite and flash-latest tiers.
+
+// Speed: gemini-flash-lite-latest offers sub-second inference latency for real-time UI.
