@@ -634,3 +634,5 @@ export const MemoryTechniqueGenerator: React.FC = () => {
     </div>
   );
 };
+
+// Visual theme: ensures card gradients harmonize with light and dark mode styles.
