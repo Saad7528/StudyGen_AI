@@ -70,3 +70,10 @@ export interface QuestionTagMetadata {
 
 // Helper type guard to check question validation status
 export type QuestionValidationStatus = 'valid' | 'incomplete' | 'review_required';
+
+// Paper export options interface
+export interface QuestionPaperExportOptions {
+  format: 'docx' | 'pdf' | 'print';
+  includeAnswerKey?: boolean;
+  includeHeader?: boolean;
+}
