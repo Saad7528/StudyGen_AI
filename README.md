@@ -92,3 +92,5 @@ StudyGen AI leverages a tiered multi-model fallback chain (`gemini-flash-lite-la
 ### Latency Benchmarks
 - Flash-Lite: ~0.87s - 1.2s per request
 - Multi-page Document OCR: ~15s - 18s end-to-end
+
+<!-- StudyGen AI v0.4.0 High-Availability Release Verified -->
