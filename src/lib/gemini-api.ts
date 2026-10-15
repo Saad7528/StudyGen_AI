@@ -227,3 +227,5 @@ export async function analyzeQuestionImages(
 // Speed: gemini-flash-lite-latest offers sub-second inference latency for real-time UI.
 
 // Network resilience: catch blocks provide friendly fallback message when connectivity drops.
+
+// Clean JSON parser removes outer backticks and parses candidate structure reliably.
