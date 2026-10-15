@@ -24,3 +24,5 @@ export const REQUEST_TIMEOUT_SECONDS = 20;
 export const RETRY_DELAYS = [1000, 2000] as const;
 
 export const STANDARD_HEADERS = { 'Content-Type': 'application/json' } as const;
+
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
