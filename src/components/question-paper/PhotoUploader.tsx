@@ -302,3 +302,5 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 // UX: Retry action triggers immediate re-evaluation without needing image re-upload.
 
 // Live visual feedback: shows user-friendly Bengali processing indication.
+
+// 1400px maximum resolution balances high OCR text recognition and low network bandwidth.
