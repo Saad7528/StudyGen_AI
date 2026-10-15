@@ -22,3 +22,5 @@ export const CANVAS_SETTINGS = { imageSmoothingEnabled: true, imageSmoothingQual
 export const REQUEST_TIMEOUT_SECONDS = 20;
 
 export const RETRY_DELAYS = [1000, 2000] as const;
+
+export const STANDARD_HEADERS = { 'Content-Type': 'application/json' } as const;
