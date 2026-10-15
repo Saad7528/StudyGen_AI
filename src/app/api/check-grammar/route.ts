@@ -123,3 +123,5 @@ export async function POST(req: NextRequest) {
 }
 
 // Deterministic temperature ensures consistent grammatical analysis without hallucinated corrections.
+
+// Grammar response schema returns categorized suggestions with contextual replacements.
