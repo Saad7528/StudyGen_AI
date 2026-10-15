@@ -306,3 +306,5 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 // 1400px maximum resolution balances high OCR text recognition and low network bandwidth.
 
 // Built-in presets allow instant one-click demonstration without requiring photo upload.
+
+// Accessibility: buttons have descriptive labels and interactive hover states.
